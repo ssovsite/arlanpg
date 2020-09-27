@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Menus;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Menus, System.inifiles;
 
 type
   TFormMain = class(TForm)
@@ -26,6 +26,7 @@ type
     procedure N7Click(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure N3Click(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     { Private declarations }
   public
@@ -35,7 +36,8 @@ type
 var
   FormMain: TFormMain;
   LoginOk, DBOnline: Integer;
-  DBType: String;
+  DBType, AppDir: String;
+  CfgINI: TIniFile;
 
 implementation
 
@@ -66,6 +68,17 @@ begin
   LoginOk := 0;
   DBOnline := 0;
   DBType := 'PG';
+  AppDir := ExtractFileDir(Application.ExeName);
+  CfgINI := TIniFile.Create(AppDir+'\arlanPG.cfg');
+end;
+
+procedure TFormMain.FormShow(Sender: TObject);
+begin
+  //запись значений позиции формы
+  CfgINI.WriteInteger('FormPosition', 'fTop', FormMain.Top);
+  CfgINI.WriteInteger('FormPosition', 'fLeft', FormMain.Left);
+  // очистка переменной объекта
+  CfgINI.Free;
 end;
 
 procedure TFormMain.N3Click(Sender: TObject);

@@ -38,7 +38,7 @@ procedure TDataModuleDB.DataModuleCreate(Sender: TObject);
 begin
   if (DBType = 'PG') then
   begin
-    //FDConnectionPG
+    FDPhysPgDriverLink1.VendorHome := AppDir + '\pglib';
   end;
 end;
 
