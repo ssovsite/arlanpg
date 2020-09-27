@@ -27,6 +27,7 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure N3Click(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure N1Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -43,7 +44,7 @@ implementation
 
 {$R *.dfm}
 
-uses Login, DBUnit;
+uses Login, DBUnit, Settings;
 
 procedure TFormMain.FormClose(Sender: TObject; var Action: TCloseAction);
 var
@@ -79,6 +80,16 @@ begin
   CfgINI.WriteInteger('FormPosition', 'fLeft', FormMain.Left);
   // очистка переменной объекта
   CfgINI.Free;
+end;
+
+procedure TFormMain.N1Click(Sender: TObject);
+begin
+  try
+    FormSettings := TFormSettings.Create(Self);
+    FormSettings.ShowModal;
+  finally
+    FormSettings.Free;
+  end;
 end;
 
 procedure TFormMain.N3Click(Sender: TObject);

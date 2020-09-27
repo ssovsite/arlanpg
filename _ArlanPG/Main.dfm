@@ -28,6 +28,7 @@ object FormMain: TFormMain
       end
       object N1: TMenuItem
         Caption = #1053#1072#1089#1090#1088#1086#1081#1082#1072'...'
+        OnClick = N1Click
       end
       object N2: TMenuItem
         Caption = '-'
