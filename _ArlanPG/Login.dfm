@@ -3,7 +3,7 @@ object FormLogin: TFormLogin
   Top = 0
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
-  Caption = 'FormLogin'
+  Caption = #1042#1099#1073#1077#1088#1080#1090#1077' '#1080#1084#1103' '#1080' '#1074#1074#1077#1076#1080#1090#1077' '#1087#1072#1088#1086#1083#1100
   ClientHeight = 164
   ClientWidth = 286
   Color = clBtnFace
@@ -40,7 +40,7 @@ object FormLogin: TFormLogin
     Top = 131
     Width = 75
     Height = 25
-    Caption = #1074#1093#1086#1076
+    Caption = #1042#1093#1086#1076
     TabOrder = 0
     OnClick = Button1Click
   end
@@ -49,7 +49,7 @@ object FormLogin: TFormLogin
     Top = 131
     Width = 75
     Height = 25
-    Caption = #1086#1090#1084#1077#1085#1072
+    Caption = #1054#1090#1084#1077#1085#1072
     TabOrder = 1
     OnClick = Button2Click
   end

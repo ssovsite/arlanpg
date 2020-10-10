@@ -7,7 +7,8 @@ uses
   Login in 'Login.pas' {FormLogin},
   Settings in 'Settings.pas' {FormSettings},
   Vcl.Themes,
-  Vcl.Styles;
+  Vcl.Styles,
+  EditBlock in 'EditBlock.pas' {FormEditBlock};
 
 {$R *.res}
 

@@ -47,6 +47,7 @@ object FormSettings: TFormSettings
     TitleFont.Height = -11
     TitleFont.Name = 'Segoe UI Semibold'
     TitleFont.Style = []
+    OnDblClick = DBGrid1DblClick
     Columns = <
       item
         Expanded = False
@@ -100,6 +101,10 @@ object FormSettings: TFormSettings
     object MTSettingsLevel1Caption: TStringField
       FieldName = 'Level1Caption'
       Size = 64
+    end
+    object MTSettingsValueType: TStringField
+      FieldName = 'ValueType'
+      Size = 16
     end
     object MTSettingsValue: TStringField
       FieldName = 'Value'
