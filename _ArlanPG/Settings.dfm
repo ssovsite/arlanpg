@@ -13,6 +13,8 @@ object FormSettings: TFormSettings
   Font.Name = 'Segoe UI Semibold'
   Font.Style = []
   OldCreateOrder = False
+  Position = poMainFormCenter
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object Button1: TButton
@@ -37,6 +39,7 @@ object FormSettings: TFormSettings
     Top = 8
     Width = 437
     Height = 233
+    DataSource = DataSourceSettings
     Options = [dgTitles, dgIndicator, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
     TabOrder = 2
     TitleFont.Charset = DEFAULT_CHARSET
@@ -47,6 +50,7 @@ object FormSettings: TFormSettings
     Columns = <
       item
         Expanded = False
+        FieldName = 'Level1Caption'
         Title.Alignment = taCenter
         Title.Caption = #1055#1072#1088#1072#1084#1077#1090#1088
         Title.Font.Charset = DEFAULT_CHARSET
@@ -59,6 +63,7 @@ object FormSettings: TFormSettings
       end
       item
         Expanded = False
+        FieldName = 'Value'
         Title.Alignment = taCenter
         Title.Caption = #1047#1085#1072#1095#1077#1085#1080#1077
         Title.Font.Charset = DEFAULT_CHARSET
@@ -69,5 +74,41 @@ object FormSettings: TFormSettings
         Width = 253
         Visible = True
       end>
+  end
+  object MTSettings: TFDMemTable
+    FetchOptions.AssignedValues = [evMode]
+    FetchOptions.Mode = fmAll
+    ResourceOptions.AssignedValues = [rvSilentMode]
+    ResourceOptions.SilentMode = True
+    UpdateOptions.AssignedValues = [uvCheckRequired, uvAutoCommitUpdates]
+    UpdateOptions.CheckRequired = False
+    UpdateOptions.AutoCommitUpdates = True
+    Left = 312
+    Top = 72
+    object MTSettingsLevel0: TStringField
+      FieldName = 'Level0'
+      Size = 64
+    end
+    object MTSettingsLevelOCaption: TStringField
+      FieldName = 'LevelOCaption'
+      Size = 64
+    end
+    object MTSettingsLevel1: TStringField
+      FieldName = 'Level1'
+      Size = 64
+    end
+    object MTSettingsLevel1Caption: TStringField
+      FieldName = 'Level1Caption'
+      Size = 64
+    end
+    object MTSettingsValue: TStringField
+      FieldName = 'Value'
+      Size = 1024
+    end
+  end
+  object DataSourceSettings: TDataSource
+    DataSet = MTSettings
+    Left = 312
+    Top = 128
   end
 end

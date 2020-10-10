@@ -1,9 +1,9 @@
 object FormMain: TFormMain
   Left = 0
   Top = 0
-  Caption = 'Arlan - '#1089#1080#1089#1090#1077#1084#1072' '#1093#1088#1072#1085#1077#1085#1080#1103' '#1076#1086#1082#1091#1084#1077#1085#1090#1086#1074
-  ClientHeight = 364
-  ClientWidth = 642
+  Caption = 'Ar-lan - '#1089#1080#1089#1090#1077#1084#1072' '#1093#1088#1072#1085#1077#1085#1080#1103' '#1076#1086#1082#1091#1084#1077#1085#1090#1086#1074
+  ClientHeight = 496
+  ClientWidth = 774
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -22,13 +22,13 @@ object FormMain: TFormMain
     Top = 72
     object Arlan1: TMenuItem
       Caption = #1041#1072#1079#1072' '#1076#1072#1085#1085#1099#1093
-      object N7: TMenuItem
+      object MainMenuAppLogin: TMenuItem
         Caption = #1040#1074#1090#1086#1088#1080#1079#1072#1094#1080#1103
-        OnClick = N7Click
+        OnClick = MainMenuAppLoginClick
       end
-      object N1: TMenuItem
+      object MainMenuAppSettings: TMenuItem
         Caption = #1053#1072#1089#1090#1088#1086#1081#1082#1072'...'
-        OnClick = N1Click
+        OnClick = MainMenuAppSettingsClick
       end
       object N2: TMenuItem
         Caption = '-'

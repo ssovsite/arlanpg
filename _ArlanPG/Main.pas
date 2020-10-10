@@ -10,24 +10,24 @@ type
   TFormMain = class(TForm)
     MainMenuBase: TMainMenu;
     Arlan1: TMenuItem;
-    N1: TMenuItem;
+    MainMenuAppSettings: TMenuItem;
     N2: TMenuItem;
     N3: TMenuItem;
     N4: TMenuItem;
     N5: TMenuItem;
     N6: TMenuItem;
-    N7: TMenuItem;
+    MainMenuAppLogin: TMenuItem;
     MainMenuItemDir: TMenuItem;
     N8: TMenuItem;
     N9: TMenuItem;
     N10: TMenuItem;
     N11: TMenuItem;
     procedure FormCreate(Sender: TObject);
-    procedure N7Click(Sender: TObject);
+    procedure MainMenuAppLoginClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure N3Click(Sender: TObject);
     procedure FormShow(Sender: TObject);
-    procedure N1Click(Sender: TObject);
+    procedure MainMenuAppSettingsClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -61,6 +61,12 @@ wLanguageId:=$0419;
 case MessageBoxEx(Wnd,lpText,lpCaption,Tip, wLanguageId) of
 IDNO: Action := caNone;
 end;
+
+  CfgINI := TIniFile.Create(AppDir+'\arlanPG.cfg');
+  CfgINI.WriteInteger('FormPosition', 'fTop', FormMain.Top);
+  CfgINI.WriteInteger('FormPosition', 'fLeft', FormMain.Left);
+  CfgINI.Free;
+
 end;
 
 procedure TFormMain.FormCreate(Sender: TObject);
@@ -70,19 +76,17 @@ begin
   DBOnline := 0;
   DBType := 'PG';
   AppDir := ExtractFileDir(Application.ExeName);
-  CfgINI := TIniFile.Create(AppDir+'\arlanPG.cfg');
 end;
 
 procedure TFormMain.FormShow(Sender: TObject);
 begin
-  //запись значений позиции формы
-  CfgINI.WriteInteger('FormPosition', 'fTop', FormMain.Top);
-  CfgINI.WriteInteger('FormPosition', 'fLeft', FormMain.Left);
-  // очистка переменной объекта
+  CfgINI := TIniFile.Create(AppDir+'\arlanPG.cfg');
+  FormMain.Top := CfgINI.ReadInteger('FormPosition', 'fTop', FormMain.Top);
+  FormMain.Left := CfgINI.ReadInteger('FormPosition', 'fLeft', FormMain.Left);
   CfgINI.Free;
 end;
 
-procedure TFormMain.N1Click(Sender: TObject);
+procedure TFormMain.MainMenuAppSettingsClick(Sender: TObject);
 begin
   try
     FormSettings := TFormSettings.Create(Self);
@@ -97,7 +101,7 @@ begin
   Self.Close;
 end;
 
-procedure TFormMain.N7Click(Sender: TObject);
+procedure TFormMain.MainMenuAppLoginClick(Sender: TObject);
 begin
 
   try
@@ -120,6 +124,8 @@ begin
     if (LoginOk = 1) then
     begin
       MainMenuItemDir.Visible := True;
+      MainMenuAppSettings.Enabled := False;
+      MainMenuAppLogin.Enabled := False;
     end;
 
 

@@ -5,13 +5,16 @@ uses
   Main in 'Main.pas' {FormMain},
   DBUnit in 'DBUnit.pas' {DataModuleDB: TDataModule},
   Login in 'Login.pas' {FormLogin},
-  Settings in 'Settings.pas' {FormSettings};
+  Settings in 'Settings.pas' {FormSettings},
+  Vcl.Themes,
+  Vcl.Styles;
 
 {$R *.res}
 
 begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
+  Application.Title := 'Ar-lan - система хранения документов';
   Application.CreateForm(TFormMain, FormMain);
   Application.CreateForm(TDataModuleDB, DataModuleDB);
   Application.Run;

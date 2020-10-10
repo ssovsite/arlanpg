@@ -36,6 +36,7 @@ uses Main, DBUnit;
 procedure TFormLogin.Button1Click(Sender: TObject);
 begin
   LoginOk :=1;
+  Self.Close;
 end;
 
 procedure TFormLogin.Button2Click(Sender: TObject);
