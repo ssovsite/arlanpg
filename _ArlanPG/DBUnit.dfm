@@ -7,7 +7,7 @@ object DataModuleDB: TDataModuleDB
     Params.Strings = (
       'Database=arlandbpg'
       'User_Name=postgres'
-      'Password=qazwsx123'
+      'Password=qAJ2mMc6eShh'
       'Server=127.0.0.1'
       'DriverID=PG')
     LoginPrompt = False
