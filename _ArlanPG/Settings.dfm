@@ -14,6 +14,7 @@ object FormSettings: TFormSettings
   Font.Style = []
   OldCreateOrder = False
   Position = poMainFormCenter
+  OnClose = FormClose
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -24,6 +25,7 @@ object FormSettings: TFormSettings
     Height = 25
     Caption = #1057#1086#1093#1088#1072#1085#1080#1090#1100
     TabOrder = 0
+    OnClick = Button1Click
   end
   object Button2: TButton
     Left = 370

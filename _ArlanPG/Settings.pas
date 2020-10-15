@@ -25,6 +25,8 @@ type
     procedure Button2Click(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure DBGrid1DblClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure Button1Click(Sender: TObject);
   private
     SaveSettings: Integer;
     { Private declarations }
@@ -42,6 +44,24 @@ uses Main, EditBlock;
 {$R *.dfm}
 
 
+procedure TFormSettings.Button1Click(Sender: TObject);
+begin
+
+  CfgINI := TIniFile.Create(AppDir+'\arlanPG.cfg');
+
+  MTSettings.First;
+  while not MTSettings.Eof do
+  begin
+
+    MTSettings.Next;
+  end;
+
+  CfgINI.Free;
+
+  SaveSettings := 0;
+  Self.Close;
+end;
+
 procedure TFormSettings.Button2Click(Sender: TObject);
 begin
   Self.Close;
@@ -55,8 +75,30 @@ begin
     FormEditBlock.EditBlockLabelCaption := MTSettings.FieldByName('Level1Caption').AsString;
     FormEditBlock.ShowModal;
   finally
+    SaveSettings := FormEditBlock.EditBlockValueOk;
     FormEditBlock.Free;
   end;
+end;
+
+procedure TFormSettings.FormClose(Sender: TObject; var Action: TCloseAction);
+var
+WND : HWND;
+lpText,lpCaption : PChar;
+Tip : Integer;
+wLanguageId : Word;
+begin
+  if (SaveSettings = 1) then
+  begin
+    WND:=FormMain.Handle;
+    lpCaption:='Закрыть настройки?';
+    lpText:='Все не сохраненные данные '+#13#10+' будут утеряны!';
+    Tip:=MB_YESNO+MB_ICONWARNING+MB_DEFBUTTON1;
+    wLanguageId:=$0419;
+    case MessageBoxEx(Wnd,lpText,lpCaption,Tip, wLanguageId) of
+      IDNO: Action := caNone;
+    end;
+  end;
+
 end;
 
 procedure TFormSettings.FormShow(Sender: TObject);
@@ -68,7 +110,9 @@ begin
     MTSettings.Active := False;
     MTSettings.Open;
     MTSettings.Append;
-      MTSettings.FieldByName('Level1Caption').Value := CfgINI.ReadString('DBSetting', 'DBTypeCaption', 'Тип базы данных');
+      //MTSettings.FieldByName('Level0').Value := 'DBSetting';
+      //MTSettings.FieldByName('Level1').Value := 'DBTypeCaption';
+      MTSettings.FieldByName('Level1Caption').Value := CfgINI.ReadString('DBSetting/', 'DBTypeCaption', 'Тип базы данных');
       MTSettings.FieldByName('ValueType').Value := CfgINI.ReadString('DBSetting', 'DBTypeValueType', 'combobox');
       MTSettings.FieldByName('Value').Value := CfgINI.ReadString('DBSetting', 'DBTypeValue', '');
     MTSettings.Post;
