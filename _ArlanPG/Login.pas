@@ -45,9 +45,11 @@ begin
       if (System.Hash.THashMD5.GetHashString(Edit1.text) <> FieldByName('personpass').AsString ) then
       begin
         LoginOk :=0;
+
       end
       else
       begin
+        FormMain.Panel1.Caption := FormMain.Panel1.Caption + FieldByName('personfio').AsString;
         LoginOk := 1;
       end;
 

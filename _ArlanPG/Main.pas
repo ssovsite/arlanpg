@@ -4,7 +4,8 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Menus, System.inifiles;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Menus, System.inifiles, Vcl.ExtCtrls,
+  Data.DB, Vcl.Grids, Vcl.DBGrids;
 
 type
   TFormMain = class(TForm)
@@ -22,6 +23,11 @@ type
     N9: TMenuItem;
     N10: TMenuItem;
     N11: TMenuItem;
+    Panel1: TPanel;
+    Panel2: TPanel;
+    DBGrid1: TDBGrid;
+    Splitter1: TSplitter;
+    DBGrid2: TDBGrid;
     procedure FormCreate(Sender: TObject);
     procedure MainMenuAppLoginClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -84,6 +90,7 @@ begin
   FormMain.Top := CfgINI.ReadInteger('FormPosition', 'fTop', FormMain.Top);
   FormMain.Left := CfgINI.ReadInteger('FormPosition', 'fLeft', FormMain.Left);
   CfgINI.Free;
+  Panel2.Visible := False;
 end;
 
 procedure TFormMain.MainMenuAppSettingsClick(Sender: TObject);
@@ -126,6 +133,7 @@ begin
       MainMenuItemDir.Visible := True;
       MainMenuAppSettings.Enabled := False;
       MainMenuAppLogin.Enabled := False;
+      Panel2.Visible := True;
     end;
 
 

@@ -17,6 +17,63 @@ object FormMain: TFormMain
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
+  object Panel1: TPanel
+    Left = 0
+    Top = 464
+    Width = 774
+    Height = 32
+    Align = alBottom
+    Alignment = taLeftJustify
+    Caption = ' '#1055#1086#1083#1100#1079#1086#1074#1072#1090#1077#1083#1100': '
+    TabOrder = 0
+  end
+  object Panel2: TPanel
+    Left = 0
+    Top = 0
+    Width = 774
+    Height = 464
+    Align = alClient
+    Caption = 'Panel2'
+    TabOrder = 1
+    ExplicitLeft = 168
+    ExplicitTop = 192
+    ExplicitWidth = 185
+    ExplicitHeight = 41
+    object Splitter1: TSplitter
+      Left = 265
+      Top = 1
+      Height = 462
+      ExplicitLeft = 296
+      ExplicitTop = 232
+      ExplicitHeight = 100
+    end
+    object DBGrid1: TDBGrid
+      Left = 1
+      Top = 1
+      Width = 264
+      Height = 462
+      Align = alLeft
+      TabOrder = 0
+      TitleFont.Charset = DEFAULT_CHARSET
+      TitleFont.Color = clWindowText
+      TitleFont.Height = -11
+      TitleFont.Name = 'Segoe UI Semibold'
+      TitleFont.Style = []
+    end
+    object DBGrid2: TDBGrid
+      Left = 268
+      Top = 1
+      Width = 505
+      Height = 462
+      Align = alClient
+      TabOrder = 1
+      TitleFont.Charset = DEFAULT_CHARSET
+      TitleFont.Color = clWindowText
+      TitleFont.Height = -11
+      TitleFont.Name = 'Segoe UI Semibold'
+      TitleFont.Style = []
+    end
+  end
   object MainMenuBase: TMainMenu
     Left = 184
     Top = 72
