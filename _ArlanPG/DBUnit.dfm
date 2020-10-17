@@ -5,10 +5,7 @@ object DataModuleDB: TDataModuleDB
   Width = 295
   object FDConnectionPG: TFDConnection
     Params.Strings = (
-      'Database=arlandbpg'
-      'User_Name=postgres'
-      'Password=qAJ2mMc6eShh'
-      'Server=127.0.0.1'
+      'Server='
       'DriverID=PG')
     LoginPrompt = False
     Transaction = FDTransactionPG
@@ -18,8 +15,15 @@ object DataModuleDB: TDataModuleDB
   object FDQueryDef: TFDQuery
     Connection = FDConnectionPG
     Transaction = FDTransactionPG
+    SQL.Strings = (
+      'select * from personlist where personid=:p1')
     Left = 40
     Top = 72
+    ParamData = <
+      item
+        Name = 'P1'
+        ParamType = ptInput
+      end>
   end
   object FDTransactionPG: TFDTransaction
     Connection = FDConnectionPG
@@ -28,7 +32,6 @@ object DataModuleDB: TDataModuleDB
   end
   object FDPhysPgDriverLink1: TFDPhysPgDriverLink
     DriverID = 'PG'
-    VendorHome = 'D:\Develop\GITRep\Delphi\ArlanPG\_ArlanPG\Win32\Debug\pglib'
     VendorLib = 'libpq.dll'
     Left = 152
     Top = 16

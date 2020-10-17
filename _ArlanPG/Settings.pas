@@ -52,7 +52,7 @@ begin
   MTSettings.First;
   while not MTSettings.Eof do
   begin
-
+    CfgINI.WriteString(MTSettings.FieldByName('Level0').AsString,MTSettings.FieldByName('Level1').AsString,MTSettings.FieldByName('Value').AsString);
     MTSettings.Next;
   end;
 
@@ -75,7 +75,21 @@ begin
     FormEditBlock.EditBlockLabelCaption := MTSettings.FieldByName('Level1Caption').AsString;
     FormEditBlock.ShowModal;
   finally
-    SaveSettings := FormEditBlock.EditBlockValueOk;
+    SaveSettings := SaveSettings + FormEditBlock.EditBlockValueOk;
+
+    if (FormEditBlock.EditBlockValueOk = 1) then
+    begin
+      if (MTSettings.FieldByName('ValueType').AsString = 'edit')
+        or (MTSettings.FieldByName('ValueType').AsString = 'editDD')
+        or (MTSettings.FieldByName('ValueType').AsString = 'editDF') then
+      begin
+        MTSettings.Edit;
+          MTSettings.FieldByName('Value').Value := trim(FormEditBlock.Edit1.Text);
+        MTSettings.Post;
+      end;
+
+    end;
+
     FormEditBlock.Free;
   end;
 end;
@@ -87,7 +101,7 @@ lpText,lpCaption : PChar;
 Tip : Integer;
 wLanguageId : Word;
 begin
-  if (SaveSettings = 1) then
+  if (SaveSettings > 0) then
   begin
     WND:=FormMain.Handle;
     lpCaption:='Закрыть настройки?';
@@ -102,6 +116,8 @@ begin
 end;
 
 procedure TFormSettings.FormShow(Sender: TObject);
+var
+  CfgSL: TStringList;
 begin
   SaveSettings := 0;
   DataSourceSettings.Enabled := False;
@@ -110,22 +126,49 @@ begin
     MTSettings.Active := False;
     MTSettings.Open;
     MTSettings.Append;
-      //MTSettings.FieldByName('Level0').Value := 'DBSetting';
-      //MTSettings.FieldByName('Level1').Value := 'DBTypeCaption';
-      MTSettings.FieldByName('Level1Caption').Value := CfgINI.ReadString('DBSetting/', 'DBTypeCaption', 'Тип базы данных');
-      MTSettings.FieldByName('ValueType').Value := CfgINI.ReadString('DBSetting', 'DBTypeValueType', 'combobox');
-      MTSettings.FieldByName('Value').Value := CfgINI.ReadString('DBSetting', 'DBTypeValue', '');
+      MTSettings.FieldByName('Level0').Value := 'DBSetting';
+      MTSettings.FieldByName('Level1').Value := 'DBLinkValue';
+      MTSettings.FieldByName('Level1Caption').Value := CfgINI.ReadString('DBSetting', 'DBLinkCaption', 'Адрес сервера');
+      MTSettings.FieldByName('ValueType').Value := CfgINI.ReadString('DBSetting', 'DBLinkType', 'edit');
+      MTSettings.FieldByName('Value').Value := CfgINI.ReadString('DBSetting', 'DBLinkValue', '');
     MTSettings.Post;
     MTSettings.Append;
+      MTSettings.FieldByName('Level0').Value := 'DBSetting';
+      MTSettings.FieldByName('Level1').Value := 'DBLinkDBNameValue';
+      MTSettings.FieldByName('Level1Caption').Value := CfgINI.ReadString('DBSetting', 'DBLinkDBNameCaption', 'Имя БД');
+      MTSettings.FieldByName('ValueType').Value := CfgINI.ReadString('DBSetting', 'DBLinkDBNameType', 'edit');
+      MTSettings.FieldByName('Value').Value := CfgINI.ReadString('DBSetting', 'DBLinkDBNameValue', '');
+    MTSettings.Post;
+    MTSettings.Append;
+      MTSettings.FieldByName('Level0').Value := 'DBSetting';
+      MTSettings.FieldByName('Level1').Value := 'DBLinkDBUserValue';
+      MTSettings.FieldByName('Level1Caption').Value := CfgINI.ReadString('DBSetting', 'DBLinkDBUserCaption', 'Имя пользователя');
+      MTSettings.FieldByName('ValueType').Value := CfgINI.ReadString('DBSetting', 'DBLinkDBUserType', 'edit');
+      MTSettings.FieldByName('Value').Value := CfgINI.ReadString('DBSetting', 'DBLinkDBUserValue', '');
+    MTSettings.Post;
+    MTSettings.Append;
+      MTSettings.FieldByName('Level0').Value := 'DBSetting';
+      MTSettings.FieldByName('Level1').Value := 'DBLinkDBUserPassValue';
+      MTSettings.FieldByName('Level1Caption').Value := CfgINI.ReadString('DBSetting', 'DBLinkDBUserPassCaption', 'Пароль');
+      MTSettings.FieldByName('ValueType').Value := CfgINI.ReadString('DBSetting', 'DBLinkDBUserPassType', 'edit');
+      MTSettings.FieldByName('Value').Value := CfgINI.ReadString('DBSetting', 'DBLinkDBUserPassValue', '');
+    MTSettings.Post;
+    MTSettings.Append;
+      MTSettings.FieldByName('Level0').Value := 'FilesSetting';
+      MTSettings.FieldByName('Level1').Value := 'FilesLinkValue';
       MTSettings.FieldByName('Level1Caption').Value := CfgINI.ReadString('FilesSetting', 'FilesLinkCaption', 'Путь к архиву');
       MTSettings.FieldByName('ValueType').Value := CfgINI.ReadString('FilesSetting', 'FilesLinkValueType', 'editDD');
       MTSettings.FieldByName('Value').Value := CfgINI.ReadString('FilesSetting', 'FilesLinkValue', '');
     MTSettings.Post;
     MTSettings.Append;
+      MTSettings.FieldByName('Level0').Value := 'FilesSetting';
+      MTSettings.FieldByName('Level1').Value := 'TemplateLinkValue';
       MTSettings.FieldByName('Level1Caption').Value := CfgINI.ReadString('FilesSetting', 'TemplateLinkCaption', 'Путь к шаблонам');
       MTSettings.FieldByName('ValueType').Value := CfgINI.ReadString('FilesSetting', 'TemplateLinkValueType', 'editDD');
       MTSettings.FieldByName('Value').Value := CfgINI.ReadString('FilesSetting', 'TemplateLinkValue', '');
     MTSettings.Post;
+
+
     MTSettings.Active := True;
   CfgINI.Free;
   MTSettings.First;

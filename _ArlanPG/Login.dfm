@@ -58,8 +58,8 @@ object FormLogin: TFormLogin
     Top = 27
     Width = 270
     Height = 21
+    Style = csDropDownList
     TabOrder = 2
-    Text = 'ComboBox1'
   end
   object Edit1: TEdit
     Left = 8
