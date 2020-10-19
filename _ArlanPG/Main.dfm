@@ -3,80 +3,135 @@ object FormMain: TFormMain
   Top = 0
   Caption = '24-14-10-10'
   ClientHeight = 572
-  ClientWidth = 927
+  ClientWidth = 1029
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
-  Font.Height = -11
+  Font.Height = -13
   Font.Name = 'Segoe UI Semibold'
   Font.Style = []
   Menu = MainMenuBase
   OldCreateOrder = False
   OnClose = FormClose
   OnCreate = FormCreate
+  OnResize = FormResize
   OnShow = FormShow
   PixelsPerInch = 96
-  TextHeight = 13
+  TextHeight = 17
   object Panel1: TPanel
     Left = 0
     Top = 540
-    Width = 927
+    Width = 1029
     Height = 32
     Align = alBottom
     Alignment = taLeftJustify
     Caption = ' '#1055#1086#1083#1100#1079#1086#1074#1072#1090#1077#1083#1100': '
     TabOrder = 0
-    ExplicitTop = 464
-    ExplicitWidth = 774
+    ExplicitWidth = 927
   end
   object Panel2: TPanel
     Left = 0
     Top = 0
-    Width = 927
+    Width = 1029
     Height = 540
     Align = alClient
     Caption = 'Panel2'
     TabOrder = 1
-    ExplicitWidth = 774
-    ExplicitHeight = 464
+    ExplicitWidth = 927
     object Splitter1: TSplitter
-      Left = 265
+      Left = 186
       Top = 1
+      Width = 4
       Height = 538
-      ExplicitLeft = 296
-      ExplicitTop = 232
-      ExplicitHeight = 100
     end
-    object DBGrid1: TDBGrid
+    object Panel4: TPanel
       Left = 1
       Top = 1
-      Width = 264
+      Width = 185
       Height = 538
       Align = alLeft
-      DataSource = DataSource1
-      Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
+      BorderStyle = bsSingle
+      Caption = 'Panel4'
       TabOrder = 0
-      TitleFont.Charset = DEFAULT_CHARSET
-      TitleFont.Color = clWindowText
-      TitleFont.Height = -11
-      TitleFont.Name = 'Segoe UI Semibold'
-      TitleFont.Style = []
-      OnDblClick = DBGrid1DblClick
+      object DBGrid1: TDBGrid
+        Left = 1
+        Top = 23
+        Width = 179
+        Height = 510
+        Align = alClient
+        DataSource = DataSource1
+        DrawingStyle = gdsClassic
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Segoe UI Semibold'
+        Font.Style = []
+        Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
+        ParentFont = False
+        TabOrder = 0
+        TitleFont.Charset = DEFAULT_CHARSET
+        TitleFont.Color = clWindowText
+        TitleFont.Height = -13
+        TitleFont.Name = 'Segoe UI Semibold'
+        TitleFont.Style = [fsBold]
+        OnDblClick = DBGrid1DblClick
+      end
+      object Panel6: TPanel
+        Left = 1
+        Top = 1
+        Width = 179
+        Height = 22
+        Align = alTop
+        TabOrder = 1
+      end
     end
-    object DBGrid2: TDBGrid
-      Left = 268
+    object Panel3: TPanel
+      Left = 190
       Top = 1
-      Width = 658
+      Width = 838
       Height = 538
       Align = alClient
-      DataSource = DataSource2
-      Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
+      BorderStyle = bsSingle
+      Caption = 'Panel3'
       TabOrder = 1
-      TitleFont.Charset = DEFAULT_CHARSET
-      TitleFont.Color = clWindowText
-      TitleFont.Height = -11
-      TitleFont.Name = 'Segoe UI Semibold'
-      TitleFont.Style = []
+      object DBGrid2: TDBGrid
+        Left = 1
+        Top = 23
+        Width = 832
+        Height = 510
+        Align = alClient
+        DataSource = DataSource2
+        DrawingStyle = gdsClassic
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Segoe UI Semibold'
+        Font.Style = []
+        Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
+        ParentFont = False
+        TabOrder = 0
+        TitleFont.Charset = DEFAULT_CHARSET
+        TitleFont.Color = clWindowText
+        TitleFont.Height = -13
+        TitleFont.Name = 'Segoe UI Semibold'
+        TitleFont.Style = [fsBold]
+      end
+      object Panel5: TPanel
+        Left = 1
+        Top = 1
+        Width = 832
+        Height = 22
+        Align = alTop
+        Caption = 'Panel5'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Segoe UI Semibold'
+        Font.Style = [fsBold]
+        ParentBackground = False
+        ParentFont = False
+        TabOrder = 1
+      end
     end
   end
   object MainMenuBase: TMainMenu

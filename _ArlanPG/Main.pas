@@ -28,7 +28,6 @@ type
     Panel1: TPanel;
     Panel2: TPanel;
     DBGrid1: TDBGrid;
-    Splitter1: TSplitter;
     DBGrid2: TDBGrid;
     MainMenuKatalog: TMenuItem;
     DataSource1: TDataSource;
@@ -39,6 +38,11 @@ type
     N1: TMenuItem;
     N7: TMenuItem;
     N12: TMenuItem;
+    Panel3: TPanel;
+    Panel4: TPanel;
+    Splitter1: TSplitter;
+    Panel5: TPanel;
+    Panel6: TPanel;
     procedure FormCreate(Sender: TObject);
     procedure MainMenuAppLoginClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -49,10 +53,12 @@ type
     procedure DBGrid1DblClick(Sender: TObject);
     procedure N8Click(Sender: TObject);
     procedure N1Click(Sender: TObject);
+    procedure FormResize(Sender: TObject);
   private
     { Private declarations }
   public
     procedure ResetBaseWindows(typeWindows: String);
+    procedure MyGridSize(Grid: Tdbgrid);
     { Public declarations }
   end;
 
@@ -67,6 +73,43 @@ implementation
 {$R *.dfm}
 
 uses Login, DBUnit, Settings;
+
+{$R *.dfm}
+procedure TFormMain.MyGridSize(Grid: Tdbgrid);
+const
+  DEFBORDER = 10;
+var
+  temp, n, k: Integer;
+  lmax: array of Integer;
+begin
+  with Grid do
+  begin
+    Canvas.Font := Font;
+    setlength(lmax,(Columns.Count)); //задаем размер массива в зависимости от количества полей
+    for n := 0 to Columns.Count - 1 do                        //
+      lmax[n] := Canvas.TextWidth(Columns[n].Title.Caption);  //заносим в массив размеры имен полей
+    grid.DataSource.DataSet.First;
+    while not grid.DataSource.DataSet.EOF do
+    begin
+      for n := 0 to Columns.Count - 1 do                                   //
+      begin                                                                //Сравниваем, если длина текста в ячейках поля
+        temp := Canvas.TextWidth(trim(Columns[n].Field.DisplayText));      // больше чем длина имени поля
+        if temp > lmax[n] then lmax[n] := temp;                            // Тогда перезаписываем значение в массиве на большее
+      end; {for}
+      grid.DataSource.DataSet.Next;
+    end;
+    grid.DataSource.DataSet.First;
+    for n := 0 to Columns.Count - 1 do
+    begin
+
+       if lmax[n] >0  then                              //Собственно еняем размер колонок
+        Columns[n].Width := lmax[n] + DEFBORDER
+        else
+        Columns[n].Width := DEFBORDER
+       end;
+    end;
+
+end;
 
 procedure TFormMain.DBGrid1DblClick(Sender: TObject);
 begin
@@ -104,6 +147,17 @@ begin
   DBOnline := 0;
   DBType := 'PG';
   AppDir := ExtractFileDir(Application.ExeName);
+  DataSource1.Enabled := False;
+  DataSource2.Enabled := False;
+end;
+
+procedure TFormMain.FormResize(Sender: TObject);
+begin
+  if (DataSource2.Enabled = True) then
+  begin
+    MyGridSize(DBGrid2);
+  end;
+
 end;
 
 procedure TFormMain.FormShow(Sender: TObject);
@@ -189,7 +243,8 @@ begin
 
   if (typeWindows = 'catalog') then
   begin
-
+  MainMenuDocuments.Caption := 'Документы';
+  Panel5.Caption := 'Документы';
   DataSource1.Enabled := False;
   DataSource2.Enabled := False;
 
@@ -227,12 +282,28 @@ begin
     DBGrid2.Columns.Clear;
     DBGrid2.Columns.Add;
     DBGrid2.Columns[0].FieldName := 'documentname';
-    DBGrid2.Columns[0].Title.Caption := 'Имя документа';
+    DBGrid2.Columns[0].Title.Caption := 'Тип документа';
     DBGrid2.Columns[0].Title.Alignment := taCenter;
     DBGrid2.Columns.Add;
-    DBGrid2.Columns[1].FieldName := 'createpoint';
-    DBGrid2.Columns[1].Title.Caption := 'Дата создания';
+    DBGrid2.Columns[1].FieldName := '';
+    DBGrid2.Columns[1].Title.Caption := 'Дата';
     DBGrid2.Columns[1].Title.Alignment := taCenter;
+    DBGrid2.Columns.Add;
+    DBGrid2.Columns[2].FieldName := '';
+    DBGrid2.Columns[2].Title.Caption := 'Клиент';
+    DBGrid2.Columns[2].Title.Alignment := taCenter;
+    DBGrid2.Columns.Add;
+    DBGrid2.Columns[3].FieldName := '';
+    DBGrid2.Columns[3].Title.Caption := 'Номер дела';
+    DBGrid2.Columns[3].Title.Alignment := taCenter;
+    DBGrid2.Columns.Add;
+    DBGrid2.Columns[4].FieldName := '';
+    DBGrid2.Columns[4].Title.Caption := 'Представитель';
+    DBGrid2.Columns[4].Title.Alignment := taCenter;
+    DBGrid2.Columns.Add;
+    DBGrid2.Columns[5].FieldName := 'createpoint';
+    DBGrid2.Columns[5].Title.Caption := 'Дата создания';
+    DBGrid2.Columns[5].Title.Alignment := taCenter;
 
   DataSource1.Enabled := True;
   DataSource2.Enabled := True;
@@ -241,7 +312,8 @@ begin
 
   if (typeWindows = 'document') then
   begin
-
+  MainMenuDocuments.Caption := 'Документы';
+  Panel5.Caption := 'Документы';
   DataSource2.Enabled := False;
 
   FDMemTable2.Close;
@@ -259,6 +331,32 @@ begin
       Close;
     end;
 
+    DBGrid2.Columns.Clear;
+    DBGrid2.Columns.Add;
+    DBGrid2.Columns[0].FieldName := 'documentname';
+    DBGrid2.Columns[0].Title.Caption := 'Тип документа';
+    DBGrid2.Columns[0].Title.Alignment := taCenter;
+    DBGrid2.Columns.Add;
+    DBGrid2.Columns[1].FieldName := '';
+    DBGrid2.Columns[1].Title.Caption := 'Дата';
+    DBGrid2.Columns[1].Title.Alignment := taCenter;
+    DBGrid2.Columns.Add;
+    DBGrid2.Columns[2].FieldName := '';
+    DBGrid2.Columns[2].Title.Caption := 'Клиент';
+    DBGrid2.Columns[2].Title.Alignment := taCenter;
+    DBGrid2.Columns.Add;
+    DBGrid2.Columns[3].FieldName := '';
+    DBGrid2.Columns[3].Title.Caption := 'Номер дела';
+    DBGrid2.Columns[3].Title.Alignment := taCenter;
+    DBGrid2.Columns.Add;
+    DBGrid2.Columns[4].FieldName := '';
+    DBGrid2.Columns[4].Title.Caption := 'Представитель';
+    DBGrid2.Columns[4].Title.Alignment := taCenter;
+    DBGrid2.Columns.Add;
+    DBGrid2.Columns[5].FieldName := 'createpoint';
+    DBGrid2.Columns[5].Title.Caption := 'Дата создания';
+    DBGrid2.Columns[5].Title.Alignment := taCenter;
+
   DataSource2.Enabled := True;
 
   end;
@@ -267,7 +365,7 @@ begin
   begin
 
   DataSource2.Enabled := False;
-
+  Panel5.Caption := 'Кредитные организации';
   FDMemTable2.Close;
   SubAction := 'bank';
 
@@ -297,6 +395,8 @@ begin
   DataSource2.Enabled := True;
 
   end;
+
+MyGridSize(DBGrid1);
 
 end;
 
