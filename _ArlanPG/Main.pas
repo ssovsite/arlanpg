@@ -60,6 +60,8 @@ type
     procedure N1Click(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure N13Click(Sender: TObject);
+    procedure DBGrid2CellClick(Column: TColumn);
+    procedure DataSource2DataChange(Sender: TObject; Field: TField);
   private
     { Private declarations }
   public
@@ -125,10 +127,31 @@ begin
 
 end;
 
+procedure TFormMain.DataSource2DataChange(Sender: TObject; Field: TField);
+begin
+  if (Panel7.Visible = True) then
+  begin
+    Panel7.Visible := False;
+  end;
+end;
+
 procedure TFormMain.DBGrid1DblClick(Sender: TObject);
 begin
   CatalogID := FDMemTable1.FieldByName('catalogid').AsInteger;
   ResetBaseWindows('document');
+end;
+
+procedure TFormMain.DBGrid2CellClick(Column: TColumn);
+begin
+  if (DBGrid2.DataSource.DataSet.RecordCount > 0) then
+  begin
+    Panel7.Visible := True;
+  end
+  else
+  begin
+    Panel7.Visible := False;
+  end;
+
 end;
 
 procedure TFormMain.FormClose(Sender: TObject; var Action: TCloseAction);

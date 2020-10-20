@@ -113,6 +113,7 @@ object FormMain: TFormMain
         TitleFont.Height = -13
         TitleFont.Name = 'Segoe UI Semibold'
         TitleFont.Style = [fsBold]
+        OnCellClick = DBGrid2CellClick
       end
       object Panel5: TPanel
         Left = 1
@@ -145,6 +146,7 @@ object FormMain: TFormMain
           Width = 760
           Height = 203
           Align = alLeft
+          DataSource = DataSource3
           TabOrder = 0
           TitleFont.Charset = DEFAULT_CHARSET
           TitleFont.Color = clWindowText
@@ -230,6 +232,7 @@ object FormMain: TFormMain
   end
   object DataSource2: TDataSource
     DataSet = FDMemTable2
+    OnDataChange = DataSource2DataChange
     Left = 472
     Top = 184
   end
@@ -256,6 +259,7 @@ object FormMain: TFormMain
     Top = 248
   end
   object DataSource3: TDataSource
+    DataSet = FDMemTable3
     Left = 479
     Top = 377
   end
