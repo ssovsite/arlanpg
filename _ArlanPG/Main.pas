@@ -43,6 +43,7 @@ type
     Splitter1: TSplitter;
     Panel5: TPanel;
     Panel6: TPanel;
+    N13: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure MainMenuAppLoginClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -54,6 +55,7 @@ type
     procedure N8Click(Sender: TObject);
     procedure N1Click(Sender: TObject);
     procedure FormResize(Sender: TObject);
+    procedure N13Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -64,15 +66,15 @@ type
 
 var
   FormMain: TFormMain;
-  LoginOk, DBOnline, CatalogID: Integer;
-  DBType, AppDir, SubAction: String;
+  LoginOk, DBOnline, CatalogID, PersonID: Integer;
+  DBType, AppDir, SubAction, TemplateDir, ArhivDir: String;
   CfgINI: TIniFile;
 
 implementation
 
 {$R *.dfm}
 
-uses Login, DBUnit, Settings;
+uses Login, DBUnit, Settings, EditBlock;
 
 {$R *.dfm}
 procedure TFormMain.MyGridSize(Grid: Tdbgrid);
@@ -93,7 +95,15 @@ begin
     begin
       for n := 0 to Columns.Count - 1 do                                   //
       begin                                                                //Сравниваем, если длина текста в ячейках поля
-        temp := Canvas.TextWidth(trim(Columns[n].Field.DisplayText));      // больше чем длина имени поля
+        if (trim(grid.DataSource.DataSet.Fields[n].AsString) <> '') then
+        begin
+          temp := Canvas.TextWidth(trim(Columns[n].Field.DisplayText));      // больше чем длина имени поля
+        end
+        else
+        begin
+          temp := 0;
+        end;
+
         if temp > lmax[n] then lmax[n] := temp;                            // Тогда перезаписываем значение в массиве на большее
       end; {for}
       grid.DataSource.DataSet.Next;
@@ -103,7 +113,7 @@ begin
     begin
 
        if lmax[n] >0  then                              //Собственно еняем размер колонок
-        Columns[n].Width := lmax[n] + DEFBORDER
+        Columns[n].Width := round((lmax[n] + DEFBORDER)*1.1)
         else
         Columns[n].Width := DEFBORDER
        end;
@@ -165,6 +175,8 @@ begin
   CfgINI := TIniFile.Create(AppDir+'\arlanPG.cfg');
   FormMain.Top := CfgINI.ReadInteger('FormPosition', 'fTop', FormMain.Top);
   FormMain.Left := CfgINI.ReadInteger('FormPosition', 'fLeft', FormMain.Left);
+  TemplateDir := CfgINI.ReadString('FilesSetting', 'TemplateLinkValue', '');
+  ArhivDir := CfgINI.ReadString('FilesSetting', 'FilesLinkValue', '');
   CfgINI.Free;
   Panel2.Visible := False;
   MainMenuKatalog.Visible := False;
@@ -186,8 +198,15 @@ begin
   ResetBaseWindows('catalog');
 end;
 
+procedure TFormMain.N13Click(Sender: TObject);
+begin
+  MainMenuDocuments.Caption := (Sender as TMenuItem).Caption;
+  ResetBaseWindows('templatelist');
+end;
+
 procedure TFormMain.N1Click(Sender: TObject);
-var   s_1, s_2: string;
+var   s_1, s_2, tmpfilename: string;
+      FileGUID : TGUID;
 begin
   if (SubAction = 'bank') then
   begin
@@ -222,6 +241,72 @@ begin
     end;
 
     ResetBaseWindows('banklist');
+
+  end;
+
+  if (SubAction = 'template') then
+  begin
+    s_1 := '';
+    s_2 := '';
+
+    try
+      FormEditBlock := TFormEditBlock.Create(Self);
+      FormEditBlock.EditBlockTypeCom := 'editDF';
+      FormEditBlock.EditBlockLabelCaption := 'Выбрать файл шаблона';
+      FormEditBlock.ShowModal;
+    finally
+      if (FormEditBlock.EditBlockValueOk = 1) then
+      begin
+        s_1 := trim(FormEditBlock.Edit1.Text);
+      end;
+
+      FormEditBlock.Free;
+    end;
+
+    if (trim(s_1) <> '') then
+    begin
+
+      try
+        FormEditBlock := TFormEditBlock.Create(Self);
+        FormEditBlock.EditBlockTypeCom := 'edit';
+        FormEditBlock.EditBlockLabelCaption := 'Введите наименование шаблона';
+        FormEditBlock.ShowModal;
+      finally
+        if (FormEditBlock.EditBlockValueOk = 1) then
+        begin
+          s_2 := trim(FormEditBlock.Edit1.Text);
+        end;
+
+        FormEditBlock.Free;
+      end;
+
+    end;
+
+
+    if (trim(s_1) <> '') and (trim(s_2) <> '') then
+    begin
+      tmpfilename := TemplateDir + '\' +ExtractFileName(trim(s_1));
+      CopyFile(Pchar(s_1), Pchar(tmpfilename), false);
+
+          with DataModuleDB.FDQueryDef do
+          begin
+            Close;
+            SQL.Clear;
+            SQL.Add('insert into templatelist (templatename, templatelink, catalogid, personid) values (:p1, :p2, :p3, :p4)');
+            Params[0].Value := trim(s_2);
+            Params[1].Value := trim(tmpfilename);
+            Params[2].Value := CatalogID;
+            Params[3].Value := PersonID;
+
+            Execute;
+            Close;
+          end;
+
+
+
+    end;
+
+    ResetBaseWindows('templatelist');
 
   end;
 end;
@@ -285,19 +370,19 @@ begin
     DBGrid2.Columns[0].Title.Caption := 'Тип документа';
     DBGrid2.Columns[0].Title.Alignment := taCenter;
     DBGrid2.Columns.Add;
-    DBGrid2.Columns[1].FieldName := '';
+    DBGrid2.Columns[1].FieldName := 'casedate';
     DBGrid2.Columns[1].Title.Caption := 'Дата';
     DBGrid2.Columns[1].Title.Alignment := taCenter;
     DBGrid2.Columns.Add;
-    DBGrid2.Columns[2].FieldName := '';
+    DBGrid2.Columns[2].FieldName := 'clientid';
     DBGrid2.Columns[2].Title.Caption := 'Клиент';
     DBGrid2.Columns[2].Title.Alignment := taCenter;
     DBGrid2.Columns.Add;
-    DBGrid2.Columns[3].FieldName := '';
+    DBGrid2.Columns[3].FieldName := 'casenumber';
     DBGrid2.Columns[3].Title.Caption := 'Номер дела';
     DBGrid2.Columns[3].Title.Alignment := taCenter;
     DBGrid2.Columns.Add;
-    DBGrid2.Columns[4].FieldName := '';
+    DBGrid2.Columns[4].FieldName := 'agentid';
     DBGrid2.Columns[4].Title.Caption := 'Представитель';
     DBGrid2.Columns[4].Title.Alignment := taCenter;
     DBGrid2.Columns.Add;
@@ -307,6 +392,9 @@ begin
 
   DataSource1.Enabled := True;
   DataSource2.Enabled := True;
+
+  MyGridSize(DBGrid1);
+  MyGridSize(DBGrid2);
 
   end;
 
@@ -337,19 +425,19 @@ begin
     DBGrid2.Columns[0].Title.Caption := 'Тип документа';
     DBGrid2.Columns[0].Title.Alignment := taCenter;
     DBGrid2.Columns.Add;
-    DBGrid2.Columns[1].FieldName := '';
+    DBGrid2.Columns[1].FieldName := 'casedate';
     DBGrid2.Columns[1].Title.Caption := 'Дата';
     DBGrid2.Columns[1].Title.Alignment := taCenter;
     DBGrid2.Columns.Add;
-    DBGrid2.Columns[2].FieldName := '';
+    DBGrid2.Columns[2].FieldName := 'clientid';
     DBGrid2.Columns[2].Title.Caption := 'Клиент';
     DBGrid2.Columns[2].Title.Alignment := taCenter;
     DBGrid2.Columns.Add;
-    DBGrid2.Columns[3].FieldName := '';
+    DBGrid2.Columns[3].FieldName := 'casenumber';
     DBGrid2.Columns[3].Title.Caption := 'Номер дела';
     DBGrid2.Columns[3].Title.Alignment := taCenter;
     DBGrid2.Columns.Add;
-    DBGrid2.Columns[4].FieldName := '';
+    DBGrid2.Columns[4].FieldName := 'agentid';
     DBGrid2.Columns[4].Title.Caption := 'Представитель';
     DBGrid2.Columns[4].Title.Alignment := taCenter;
     DBGrid2.Columns.Add;
@@ -358,6 +446,7 @@ begin
     DBGrid2.Columns[5].Title.Alignment := taCenter;
 
   DataSource2.Enabled := True;
+  MyGridSize(DBGrid2);
 
   end;
 
@@ -393,10 +482,46 @@ begin
     DBGrid2.Columns[1].Title.Alignment := taCenter;
 
   DataSource2.Enabled := True;
+  MyGridSize(DBGrid2);
 
   end;
 
-MyGridSize(DBGrid1);
+ if (typeWindows = 'templatelist') then
+  begin
+
+  DataSource2.Enabled := False;
+  Panel5.Caption := 'Шаблоны документов';
+  FDMemTable2.Close;
+  SubAction := 'template';
+
+    with DataModuleDB.FDQueryDef do
+    begin
+      Close;
+      SQL.Clear;
+      SQL.Add('select * from templatelist where catalogid=:p1 order by templatename');
+      Params[0].Value := CatalogID;
+      Open;
+        FetchAll;
+        FDMemTable2.Data := Data;
+        FDMemTable2.First;
+      Close;
+    end;
+
+    DBGrid2.Columns.Clear;
+    DBGrid2.Columns.Add;
+    DBGrid2.Columns[0].FieldName := 'templatename';
+    DBGrid2.Columns[0].Title.Caption := 'Наименование шаблона';
+    DBGrid2.Columns[0].Title.Alignment := taCenter;
+    DBGrid2.Columns.Add;
+    DBGrid2.Columns[1].FieldName := 'templatelink';
+    DBGrid2.Columns[1].Title.Caption := 'Путь к шаблону';
+    DBGrid2.Columns[1].Title.Alignment := taCenter;
+
+  DataSource2.Enabled := True;
+  MyGridSize(DBGrid2);
+  end;
+
+
 
 end;
 

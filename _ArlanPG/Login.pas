@@ -50,6 +50,7 @@ begin
       else
       begin
         FormMain.Panel1.Caption := FormMain.Panel1.Caption + FieldByName('personfio').AsString;
+        PersonID := FieldByName('personid').AsInteger;
         LoginOk := 1;
       end;
 

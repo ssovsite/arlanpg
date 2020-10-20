@@ -15,6 +15,7 @@ type
     Button2: TButton;
     Memo1: TMemo;
     Button3: TButton;
+    OpenDialog1: TOpenDialog;
     procedure FormShow(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
@@ -58,6 +59,14 @@ begin
     if SelectDirectory('Выберите папку:', '', newFileDir,  [sdNewFolder, sdNewUI, sdShowEdit, sdShowShares]) then
     begin
       Edit1.Text := newFileDir;
+    end;
+  end;
+
+  if (EditBlockTypeCom = 'editDF') then
+  begin
+    if OpenDialog1.Execute then
+    begin
+      Edit1.Text := OpenDialog1.FileName;
     end;
   end;
 end;

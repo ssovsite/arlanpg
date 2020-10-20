@@ -40,9 +40,11 @@ object FormSettings: TFormSettings
     Left = 8
     Top = 8
     Width = 437
-    Height = 233
+    Height = 177
     DataSource = DataSourceSettings
     Options = [dgTitles, dgIndicator, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
+    ParentShowHint = False
+    ShowHint = False
     TabOrder = 2
     TitleFont.Charset = DEFAULT_CHARSET
     TitleFont.Color = clWindowText
@@ -77,6 +79,17 @@ object FormSettings: TFormSettings
         Width = 253
         Visible = True
       end>
+  end
+  object Memo1: TMemo
+    Left = 8
+    Top = 184
+    Width = 437
+    Height = 57
+    Color = clMenu
+    Lines.Strings = (
+      'Memo1')
+    ReadOnly = True
+    TabOrder = 3
   end
   object MTSettings: TFDMemTable
     FetchOptions.AssignedValues = [evMode]
@@ -115,6 +128,7 @@ object FormSettings: TFormSettings
   end
   object DataSourceSettings: TDataSource
     DataSet = MTSettings
+    OnDataChange = DataSourceSettingsDataChange
     Left = 312
     Top = 128
   end

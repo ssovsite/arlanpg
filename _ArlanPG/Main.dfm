@@ -27,7 +27,6 @@ object FormMain: TFormMain
     Alignment = taLeftJustify
     Caption = ' '#1055#1086#1083#1100#1079#1086#1074#1072#1090#1077#1083#1100': '
     TabOrder = 0
-    ExplicitWidth = 927
   end
   object Panel2: TPanel
     Left = 0
@@ -37,7 +36,6 @@ object FormMain: TFormMain
     Align = alClient
     Caption = 'Panel2'
     TabOrder = 1
-    ExplicitWidth = 927
     object Splitter1: TSplitter
       Left = 186
       Top = 1
@@ -186,6 +184,10 @@ object FormMain: TFormMain
       end
       object N11: TMenuItem
         Caption = #1057#1091#1076#1077#1073#1085#1099#1077' '#1091#1095#1072#1089#1090#1082#1080
+      end
+      object N13: TMenuItem
+        Caption = #1064#1072#1073#1083#1086#1085#1099
+        OnClick = N13Click
       end
     end
     object N4: TMenuItem

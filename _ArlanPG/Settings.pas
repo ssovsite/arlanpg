@@ -22,11 +22,13 @@ type
     MTSettingsLevel1Caption: TStringField;
     DataSourceSettings: TDataSource;
     MTSettingsValueType: TStringField;
+    Memo1: TMemo;
     procedure Button2Click(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure DBGrid1DblClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Button1Click(Sender: TObject);
+    procedure DataSourceSettingsDataChange(Sender: TObject; Field: TField);
   private
     SaveSettings: Integer;
     { Private declarations }
@@ -65,6 +67,14 @@ end;
 procedure TFormSettings.Button2Click(Sender: TObject);
 begin
   Self.Close;
+end;
+
+procedure TFormSettings.DataSourceSettingsDataChange(Sender: TObject;
+  Field: TField);
+begin
+  Memo1.Clear;
+  Memo1.Lines.Add('Значение:');
+  Memo1.Lines.Add(MTSettings.FieldByName('Value').AsString);
 end;
 
 procedure TFormSettings.DBGrid1DblClick(Sender: TObject);
@@ -173,6 +183,9 @@ begin
   CfgINI.Free;
   MTSettings.First;
   DataSourceSettings.Enabled := True;
+  Memo1.Clear;
+  Memo1.Lines.Add('Значение:');
+  Memo1.Lines.Add(MTSettings.FieldByName('Value').AsString);
 end;
 
 end.

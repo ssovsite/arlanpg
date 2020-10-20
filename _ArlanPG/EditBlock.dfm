@@ -56,7 +56,6 @@ object FormEditBlock: TFormEditBlock
     Caption = #1042#1074#1086#1076
     TabOrder = 2
     OnClick = Button1Click
-    ExplicitTop = 134
   end
   object Button2: TButton
     Left = 301
@@ -67,7 +66,6 @@ object FormEditBlock: TFormEditBlock
     Caption = #1054#1090#1084#1077#1085#1072
     TabOrder = 3
     OnClick = Button2Click
-    ExplicitTop = 134
   end
   object Memo1: TMemo
     Left = 8
@@ -88,5 +86,9 @@ object FormEditBlock: TFormEditBlock
     TabOrder = 5
     Visible = False
     OnClick = Button3Click
+  end
+  object OpenDialog1: TOpenDialog
+    Left = 168
+    Top = 88
   end
 end
