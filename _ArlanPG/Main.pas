@@ -44,6 +44,10 @@ type
     Panel5: TPanel;
     Panel6: TPanel;
     N13: TMenuItem;
+    Panel7: TPanel;
+    DBGrid3: TDBGrid;
+    DataSource3: TDataSource;
+    FDMemTable3: TFDMemTable;
     procedure FormCreate(Sender: TObject);
     procedure MainMenuAppLoginClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -159,6 +163,7 @@ begin
   AppDir := ExtractFileDir(Application.ExeName);
   DataSource1.Enabled := False;
   DataSource2.Enabled := False;
+  DataSource3.Enabled := False;
 end;
 
 procedure TFormMain.FormResize(Sender: TObject);
@@ -179,6 +184,7 @@ begin
   ArhivDir := CfgINI.ReadString('FilesSetting', 'FilesLinkValue', '');
   CfgINI.Free;
   Panel2.Visible := False;
+  Panel7.Visible :=False;
   MainMenuKatalog.Visible := False;
   MainMenuDocuments.Visible := False;
 end;

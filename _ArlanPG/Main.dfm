@@ -96,7 +96,7 @@ object FormMain: TFormMain
         Left = 1
         Top = 23
         Width = 832
-        Height = 510
+        Height = 305
         Align = alClient
         DataSource = DataSource2
         DrawingStyle = gdsClassic
@@ -129,6 +129,29 @@ object FormMain: TFormMain
         ParentBackground = False
         ParentFont = False
         TabOrder = 1
+      end
+      object Panel7: TPanel
+        Left = 1
+        Top = 328
+        Width = 832
+        Height = 205
+        Align = alBottom
+        Caption = 'Panel7'
+        TabOrder = 2
+        Visible = False
+        object DBGrid3: TDBGrid
+          Left = 1
+          Top = 1
+          Width = 760
+          Height = 203
+          Align = alLeft
+          TabOrder = 0
+          TitleFont.Charset = DEFAULT_CHARSET
+          TitleFont.Color = clWindowText
+          TitleFont.Height = -13
+          TitleFont.Name = 'Segoe UI Semibold'
+          TitleFont.Style = []
+        end
       end
     end
   end
@@ -231,5 +254,20 @@ object FormMain: TFormMain
     UpdateOptions.AutoCommitUpdates = True
     Left = 472
     Top = 248
+  end
+  object DataSource3: TDataSource
+    Left = 479
+    Top = 377
+  end
+  object FDMemTable3: TFDMemTable
+    FetchOptions.AssignedValues = [evMode]
+    FetchOptions.Mode = fmAll
+    ResourceOptions.AssignedValues = [rvSilentMode]
+    ResourceOptions.SilentMode = True
+    UpdateOptions.AssignedValues = [uvCheckRequired, uvAutoCommitUpdates]
+    UpdateOptions.CheckRequired = False
+    UpdateOptions.AutoCommitUpdates = True
+    Left = 479
+    Top = 433
   end
 end
