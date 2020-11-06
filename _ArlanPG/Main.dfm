@@ -146,6 +146,7 @@ object FormMain: TFormMain
           Width = 760
           Height = 203
           Align = alLeft
+          Anchors = [akLeft, akTop, akRight, akBottom]
           DataSource = DataSource3
           TabOrder = 0
           TitleFont.Charset = DEFAULT_CHARSET
