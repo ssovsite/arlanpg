@@ -92,7 +92,7 @@ begin
     edit : Edit1.Visible := True;
     editDD, editDF : begin Edit1.Visible := True; Button3.Visible := True; end;
     combobox : ComboBox1.Visible := True;
-    memo : begin Memo1.Visible := True;  Self.Height := 128; end;
+    memo : begin Memo1.Visible := True;  Self.Height := 200; end;
   end;
 
   Label1.Caption := EditBlockLabelCaption;

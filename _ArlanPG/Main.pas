@@ -7,7 +7,7 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Menus, System.inifiles, Vcl.ExtCtrls,
   Data.DB, Vcl.Grids, Vcl.DBGrids, FireDAC.Stan.Intf, FireDAC.Stan.Option,
   FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
-  FireDAC.DApt.Intf, FireDAC.Comp.DataSet, FireDAC.Comp.Client;
+  FireDAC.DApt.Intf, FireDAC.Comp.DataSet, FireDAC.Comp.Client, Vcl.StdCtrls;
 
 type
   TFormMain = class(TForm)
@@ -48,6 +48,15 @@ type
     DBGrid3: TDBGrid;
     DataSource3: TDataSource;
     FDMemTable3: TFDMemTable;
+    MainMenuItemReport: TMenuItem;
+    N15: TMenuItem;
+    N16: TMenuItem;
+    N17: TMenuItem;
+    Panel8: TPanel;
+    Button1: TButton;
+    Button2: TButton;
+    Button3: TButton;
+    Button4: TButton;
     procedure FormCreate(Sender: TObject);
     procedure MainMenuAppLoginClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -62,10 +71,15 @@ type
     procedure N13Click(Sender: TObject);
     procedure DBGrid2CellClick(Column: TColumn);
     procedure DataSource2DataChange(Sender: TObject; Field: TField);
+    procedure N9Click(Sender: TObject);
+    procedure N10Click(Sender: TObject);
+    procedure N7Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
   private
     { Private declarations }
   public
     procedure ResetBaseWindows(typeWindows: String);
+    procedure ResetSubWindows(typeWindows: String);
     procedure MyGridSize(Grid: Tdbgrid);
     { Public declarations }
   end;
@@ -125,6 +139,15 @@ begin
        end;
     end;
 
+end;
+
+procedure TFormMain.Button2Click(Sender: TObject);
+begin
+  Panel8.Visible := False;
+  DBGrid2.Enabled := True;
+  DBGrid2.Refresh;
+  DBGrid1.Enabled := True;
+  DBGrid1.Refresh;
 end;
 
 procedure TFormMain.DataSource2DataChange(Sender: TObject; Field: TField);
@@ -207,9 +230,11 @@ begin
   ArhivDir := CfgINI.ReadString('FilesSetting', 'FilesLinkValue', '');
   CfgINI.Free;
   Panel2.Visible := False;
-  Panel7.Visible :=False;
+  Panel7.Visible := False;
+  Panel8.Visible := False;
   MainMenuKatalog.Visible := False;
   MainMenuDocuments.Visible := False;
+  MainMenuItemReport.Visible := False;
 end;
 
 procedure TFormMain.MainMenuAppSettingsClick(Sender: TObject);
@@ -227,6 +252,12 @@ begin
   ResetBaseWindows('catalog');
 end;
 
+procedure TFormMain.N10Click(Sender: TObject);
+begin
+  MainMenuDocuments.Caption := (Sender as TMenuItem).Caption;
+  ResetBaseWindows('delegatelist');
+end;
+
 procedure TFormMain.N13Click(Sender: TObject);
 begin
   MainMenuDocuments.Caption := (Sender as TMenuItem).Caption;
@@ -234,7 +265,7 @@ begin
 end;
 
 procedure TFormMain.N1Click(Sender: TObject);
-var   s_1, s_2, tmpfilename: string;
+var   s_1, s_2, s_3, s_4, s_5, s_6, tmpfilename: string;
       FileGUID : TGUID;
 begin
   if (SubAction = 'bank') then
@@ -338,6 +369,200 @@ begin
     ResetBaseWindows('templatelist');
 
   end;
+
+  if (SubAction = 'client') then
+  begin
+
+    s_1 := '';
+    s_2 := '';
+    s_3 := '';
+    s_4 := '';
+    s_5 := '';
+    s_6 := '';
+
+    try
+      FormEditBlock := TFormEditBlock.Create(Self);
+      FormEditBlock.EditBlockTypeCom := 'edit';
+      FormEditBlock.EditBlockLabelCaption := 'Наименование / ФИО клиента';
+      FormEditBlock.ShowModal;
+    finally
+      if (FormEditBlock.EditBlockValueOk = 1) then
+      begin
+        s_1 := trim(FormEditBlock.Edit1.Text);
+      end;
+
+      FormEditBlock.Free;
+    end;
+
+    if (trim(s_1) <> '') then
+    begin
+
+      try
+        FormEditBlock := TFormEditBlock.Create(Self);
+        FormEditBlock.EditBlockTypeCom := 'memo';
+        FormEditBlock.EditBlockLabelCaption := 'Введите адрес клиента';
+        FormEditBlock.ShowModal;
+      finally
+        if (FormEditBlock.EditBlockValueOk = 1) then
+        begin
+          s_2 := trim(FormEditBlock.Memo1.Text);
+        end;
+
+        FormEditBlock.Free;
+      end;
+
+    end;
+
+    if (trim(s_1) <> '') and (trim(s_2) <> '') then
+    begin
+
+      try
+        FormEditBlock := TFormEditBlock.Create(Self);
+        FormEditBlock.EditBlockTypeCom := 'edit';
+        FormEditBlock.EditBlockLabelCaption := 'Введите ИНН клиента';
+        FormEditBlock.ShowModal;
+      finally
+        if (FormEditBlock.EditBlockValueOk = 1) then
+        begin
+          s_3 := trim(FormEditBlock.Edit1.Text);
+        end;
+
+        FormEditBlock.Free;
+      end;
+
+    end;
+
+    if (trim(s_1) <> '') and (trim(s_2) <> '') then
+    begin
+
+      try
+        FormEditBlock := TFormEditBlock.Create(Self);
+        FormEditBlock.EditBlockTypeCom := 'edit';
+        FormEditBlock.EditBlockLabelCaption := 'Введите ОГРН клиента';
+        FormEditBlock.ShowModal;
+      finally
+        if (FormEditBlock.EditBlockValueOk = 1) then
+        begin
+          s_4 := trim(FormEditBlock.Edit1.Text);
+        end;
+
+        FormEditBlock.Free;
+      end;
+
+    end;
+
+    if (trim(s_1) <> '') and (trim(s_2) <> '') then
+    begin
+
+          with DataModuleDB.FDQueryDef do
+          begin
+            Close;
+            SQL.Clear;
+            SQL.Add('insert into clientlist (clientname, clientadres, catalogid, personid, clientinn, clientogrn) values (:p1, :p2, :p3, :p4, :p5, :p6)');
+            Params[0].Value := trim(s_1);
+            Params[1].Value := trim(s_2);
+            Params[2].Value := CatalogID;
+            Params[3].Value := PersonID;
+            Params[4].Value := trim(s_3);
+            Params[5].Value := trim(s_4);
+
+            Execute;
+            Close;
+          end;
+
+
+
+    end;
+
+    ResetBaseWindows('clientlist');
+
+  end;
+
+  if (SubAction = 'delegate') then
+  begin
+
+    s_1 := '';
+    s_2 := '';
+    s_3 := '';
+    s_4 := '';
+    s_5 := '';
+    s_6 := '';
+
+    try
+      FormEditBlock := TFormEditBlock.Create(Self);
+      FormEditBlock.EditBlockTypeCom := 'edit';
+      FormEditBlock.EditBlockLabelCaption := 'ФИО представителя';
+      FormEditBlock.ShowModal;
+    finally
+      if (FormEditBlock.EditBlockValueOk = 1) then
+      begin
+        s_1 := trim(FormEditBlock.Edit1.Text);
+      end;
+
+      FormEditBlock.Free;
+    end;
+
+    if (trim(s_1) <> '') then
+    begin
+
+      try
+        FormEditBlock := TFormEditBlock.Create(Self);
+        FormEditBlock.EditBlockTypeCom := 'edit';
+        FormEditBlock.EditBlockLabelCaption := 'Телефон представителя';
+        FormEditBlock.ShowModal;
+      finally
+        if (FormEditBlock.EditBlockValueOk = 1) then
+        begin
+          s_2 := trim(FormEditBlock.Edit1.Text);
+        end;
+
+        FormEditBlock.Free;
+      end;
+
+    end;
+
+    if (trim(s_1) <> '') then
+    begin
+
+      try
+        FormEditBlock := TFormEditBlock.Create(Self);
+        FormEditBlock.EditBlockTypeCom := 'edit';
+        FormEditBlock.EditBlockLabelCaption := 'Номер и дата доверенности';
+        FormEditBlock.ShowModal;
+      finally
+        if (FormEditBlock.EditBlockValueOk = 1) then
+        begin
+          s_3 := trim(FormEditBlock.Edit1.Text);
+        end;
+
+        FormEditBlock.Free;
+      end;
+
+    end;
+
+    if (trim(s_1) <> '') then
+    begin
+
+          with DataModuleDB.FDQueryDef do
+          begin
+            Close;
+            SQL.Clear;
+            SQL.Add('insert into delegatelist (delegatename, delegatephone, catalogid, personid, delegateorder) values (:p1, :p2, :p3, :p4, :p5)');
+            Params[0].Value := trim(s_1);
+            Params[1].Value := trim(s_2);
+            Params[2].Value := CatalogID;
+            Params[3].Value := PersonID;
+            Params[4].Value := trim(s_3);
+            Execute;
+            Close;
+          end;
+
+    end;
+
+    ResetBaseWindows('delegatelist');
+
+  end;
+
 end;
 
 procedure TFormMain.N3Click(Sender: TObject);
@@ -345,10 +570,35 @@ begin
   Self.Close;
 end;
 
+procedure TFormMain.N7Click(Sender: TObject);
+begin
+  if (Panel7.Visible = False) then
+  begin
+    if (DBGrid2.DataSource.DataSet.RecordCount > 0) then
+    begin
+      Panel7.Visible := True;
+    end
+  end;
+
+  if (DBGrid2.DataSource.DataSet.RecordCount > 0) then
+  begin
+    DBGrid1.Enabled := False;
+    DBGrid2.Enabled := False;
+    Panel8.Visible := True;
+  end
+
+end;
+
 procedure TFormMain.N8Click(Sender: TObject);
 begin
   MainMenuDocuments.Caption := (Sender as TMenuItem).Caption;
   ResetBaseWindows('banklist');
+end;
+
+procedure TFormMain.N9Click(Sender: TObject);
+begin
+  MainMenuDocuments.Caption := (Sender as TMenuItem).Caption;
+  ResetBaseWindows('clientlist');
 end;
 
 procedure TFormMain.ResetBaseWindows(typeWindows: String);
@@ -551,7 +801,142 @@ begin
   end;
 
 
+  if (typeWindows = 'clientlist') then
+  begin
 
+  DataSource2.Enabled := False;
+  Panel5.Caption := 'Клиенты';
+  FDMemTable2.Close;
+  SubAction := 'client';
+
+    with DataModuleDB.FDQueryDef do
+    begin
+      Close;
+      SQL.Clear;
+      SQL.Add('select * from clientlist where catalogid=:p1 order by clientname');
+      Params[0].Value := CatalogID;
+      Open;
+        FetchAll;
+        FDMemTable2.Data := Data;
+        FDMemTable2.First;
+      Close;
+    end;
+
+    DBGrid2.Columns.Clear;
+    DBGrid2.Columns.Add;
+    DBGrid2.Columns[0].FieldName := 'clientname';
+    DBGrid2.Columns[0].Title.Caption := 'Наименование клиента';
+    DBGrid2.Columns[0].Title.Alignment := taCenter;
+    DBGrid2.Columns.Add;
+    DBGrid2.Columns[1].FieldName := 'clientadres';
+    DBGrid2.Columns[1].Title.Caption := 'Адрес клиента';
+    DBGrid2.Columns[1].Title.Alignment := taCenter;
+    DBGrid2.Columns.Add;
+    DBGrid2.Columns[2].FieldName := 'clientogrn';
+    DBGrid2.Columns[2].Title.Caption := 'ОГРН клиента';
+    DBGrid2.Columns[2].Title.Alignment := taCenter;
+    DBGrid2.Columns.Add;
+    DBGrid2.Columns[3].FieldName := 'clientinn';
+    DBGrid2.Columns[3].Title.Caption := 'ИНН клиента';
+    DBGrid2.Columns[3].Title.Alignment := taCenter;
+
+  DataSource2.Enabled := True;
+  MyGridSize(DBGrid2);
+
+  end;
+
+
+  if (typeWindows = 'delegatelist') then
+  begin
+
+  DataSource2.Enabled := False;
+  Panel5.Caption := 'Представители';
+  FDMemTable2.Close;
+  SubAction := 'delegate';
+
+    with DataModuleDB.FDQueryDef do
+    begin
+      Close;
+      SQL.Clear;
+      SQL.Add('select * from delegatelist where catalogid=:p1 order by delegatename');
+      Params[0].Value := CatalogID;
+      Open;
+        FetchAll;
+        FDMemTable2.Data := Data;
+        FDMemTable2.First;
+      Close;
+    end;
+
+    DBGrid2.Columns.Clear;
+    DBGrid2.Columns.Add;
+    DBGrid2.Columns[0].FieldName := 'delegatename';
+    DBGrid2.Columns[0].Title.Caption := 'ФИО представителя';
+    DBGrid2.Columns[0].Title.Alignment := taCenter;
+    DBGrid2.Columns.Add;
+    DBGrid2.Columns[1].FieldName := 'delegatephone';
+    DBGrid2.Columns[1].Title.Caption := 'Телефон представителя';
+    DBGrid2.Columns[1].Title.Alignment := taCenter;
+    DBGrid2.Columns.Add;
+    DBGrid2.Columns[2].FieldName := 'delegateorder';
+    DBGrid2.Columns[2].Title.Caption := 'Доверенность';
+    DBGrid2.Columns[2].Title.Alignment := taCenter;
+
+  DataSource2.Enabled := True;
+  MyGridSize(DBGrid2);
+
+  end;
+
+end;
+
+procedure TFormMain.ResetSubWindows(typeWindows: String);
+begin
+  if (typeWindows = 'delegatelist') then
+  begin
+
+  DataSource3.Enabled := False;
+  FDMemTable3.Close;
+
+    with DataModuleDB.FDQueryDef do
+    begin
+      Close;
+      SQL.Clear;
+      SQL.Add('select * from delegatelist where delegateid=:p1');
+      Params[0].Value := FDMemTable2.FieldByName('delegateid').AsInteger;
+      Open;
+        FetchAll;
+        FDMemTable3.Data := Data;
+        FDMemTable3.First;
+      Close;
+    end;
+
+  DataSource3.Enabled := True;
+  MyGridSize(DBGrid3);
+
+  end;
+
+  if (typeWindows = 'clientlist') then
+  begin
+
+  DataSource3.Enabled := False;
+  FDMemTable3.Close;
+
+    with DataModuleDB.FDQueryDef do
+    begin
+      Close;
+      SQL.Clear;
+      SQL.Add('select * from clientlist where clientid=:p1');
+      Params[0].Value := FDMemTable2.FieldByName('clientid').AsInteger;
+      Open;
+        FetchAll;
+        FDMemTable3.Data := Data;
+        FDMemTable3.First;
+      Close;
+    end;
+
+  DataSource3.Enabled := True;
+  MyGridSize(DBGrid3);
+
+  end;
 end;
 
 procedure TFormMain.MainMenuAppLoginClick(Sender: TObject);
@@ -577,6 +962,7 @@ begin
     if (LoginOk = 1) then
     begin
       MainMenuItemDir.Visible := True;
+      MainMenuItemReport.Visible := True;
       MainMenuAppSettings.Enabled := False;
       MainMenuAppLogin.Enabled := False;
       MainMenuKatalog.Visible := True;

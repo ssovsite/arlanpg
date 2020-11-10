@@ -69,7 +69,7 @@ object FormEditBlock: TFormEditBlock
   end
   object Memo1: TMemo
     Left = 8
-    Top = 70
+    Top = 74
     Width = 368
     Height = 89
     Lines.Strings = (
