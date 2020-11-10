@@ -14,6 +14,7 @@ object FormEditBlock: TFormEditBlock
   Font.Style = []
   OldCreateOrder = False
   Position = poOwnerFormCenter
+  OnCreate = FormCreate
   OnShow = FormShow
   DesignSize = (
     384

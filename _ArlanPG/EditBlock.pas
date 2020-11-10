@@ -20,12 +20,14 @@ type
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
   public
     EditBlockValueOk: Integer;
     EditBlockTypeCom: String;
     EditBlockLabelCaption: String;
+    EditBlockValueDef: String;
     { Public declarations }
   end;
 
@@ -71,6 +73,11 @@ begin
   end;
 end;
 
+procedure TFormEditBlock.FormCreate(Sender: TObject);
+begin
+  EditBlockValueDef := '';
+end;
+
 procedure TFormEditBlock.FormShow(Sender: TObject);
 var
   StrVal : TStringSet;
@@ -89,10 +96,10 @@ begin
 
   StrVal := TStringSet(GetEnumValue(TypeInfo(TStringSet), EditBlockTypeCom));
   case StrVal of
-    edit : Edit1.Visible := True;
+    edit : begin Edit1.Visible := True; Edit1.Text := EditBlockValueDef; end;
     editDD, editDF : begin Edit1.Visible := True; Button3.Visible := True; end;
     combobox : ComboBox1.Visible := True;
-    memo : begin Memo1.Visible := True;  Self.Height := 200; end;
+    memo : begin Memo1.Visible := True; Memo1.Text := EditBlockValueDef; Self.Height := 200; end;
   end;
 
   Label1.Caption := EditBlockLabelCaption;

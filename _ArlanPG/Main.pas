@@ -57,6 +57,12 @@ type
     Button2: TButton;
     Button3: TButton;
     Button4: TButton;
+    MTParams: TFDMemTable;
+    MTParamsparamid: TIntegerField;
+    MTParamsparamcaption: TStringField;
+    MTParamsparamvalue: TStringField;
+    MTParamsparamname: TStringField;
+    MTParamsparamtype: TStringField;
     procedure FormCreate(Sender: TObject);
     procedure MainMenuAppLoginClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -75,6 +81,8 @@ type
     procedure N10Click(Sender: TObject);
     procedure N7Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
+    procedure Button3Click(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -141,6 +149,80 @@ begin
 
 end;
 
+procedure TFormMain.Button1Click(Sender: TObject);
+begin
+  if (SubAction = 'client') then
+  begin
+    with DataModuleDB.FDQueryDef do
+    begin
+      Close;
+      SQL.Clear;
+      SQL.Add('update clientlist set clientname=:p1, clientadres=:p2, clientogrn=:p3, clientinn=:p4  where clientid=:p0');
+      ParamByName('p0').Value := FDMemTable2.FieldByName('clientid').AsInteger;
+      MTParams.First;
+      while not MTParams.Eof do
+      begin
+        if (MTParams.FieldByName('paramname').AsString = 'clientname') then
+        begin
+          ParamByName('p1').Value := MTParams.FieldByName('paramvalue').AsString;
+        end;
+        if (MTParams.FieldByName('paramname').AsString = 'clientadres') then
+        begin
+          ParamByName('p2').Value := MTParams.FieldByName('paramvalue').AsString;
+        end;
+        if (MTParams.FieldByName('paramname').AsString = 'clientogrn') then
+        begin
+          ParamByName('p3').Value := MTParams.FieldByName('paramvalue').AsString;
+        end;
+        if (MTParams.FieldByName('paramname').AsString = 'clientinn') then
+        begin
+          ParamByName('p4').Value := MTParams.FieldByName('paramvalue').AsString;
+        end;
+        MTParams.Next;
+      end;
+
+      Execute;
+      Close;
+    end;
+
+    ResetBaseWindows('clientlist');
+    ResetSubWindows('');
+    Button2Click(nil);
+  end;
+
+  if (SubAction = 'bank') then
+  begin
+    with DataModuleDB.FDQueryDef do
+    begin
+      Close;
+      SQL.Clear;
+      SQL.Add('update banklist set bankname=:p1, bankadres=:p2 where bankid=:p0');
+      ParamByName('p0').Value := FDMemTable2.FieldByName('bankid').AsInteger;
+      MTParams.First;
+      while not MTParams.Eof do
+      begin
+        if (MTParams.FieldByName('paramname').AsString = 'bankname') then
+        begin
+          ParamByName('p1').Value := MTParams.FieldByName('paramvalue').AsString;
+        end;
+        if (MTParams.FieldByName('paramname').AsString = 'bankadres') then
+        begin
+          ParamByName('p2').Value := MTParams.FieldByName('paramvalue').AsString;
+        end;
+        MTParams.Next;
+      end;
+
+      Execute;
+      Close;
+    end;
+
+    ResetBaseWindows('banklist');
+    ResetSubWindows('');
+    Button2Click(nil);
+  end;
+
+end;
+
 procedure TFormMain.Button2Click(Sender: TObject);
 begin
   Panel8.Visible := False;
@@ -148,6 +230,35 @@ begin
   DBGrid2.Refresh;
   DBGrid1.Enabled := True;
   DBGrid1.Refresh;
+end;
+
+procedure TFormMain.Button3Click(Sender: TObject);
+begin
+  try
+    FormEditBlock := TFormEditBlock.Create(Self);
+    FormEditBlock.EditBlockTypeCom := MTParams.FieldByName('paramtype').AsString;
+    FormEditBlock.EditBlockLabelCaption := MTParams.FieldByName('paramcaption').AsString;
+    FormEditBlock.EditBlockValueDef := MTParams.FieldByName('paramvalue').AsString;
+    FormEditBlock.ShowModal;
+  finally
+    if (FormEditBlock.EditBlockValueOk = 1) then
+    begin
+      MTParams.Edit;
+        if (MTParams.FieldByName('paramtype').AsString = 'memo') then
+        begin
+          MTParams.FieldByName('paramvalue').Value := trim(FormEditBlock.Memo1.Text);
+        end
+        else
+        begin
+          MTParams.FieldByName('paramvalue').Value := trim(FormEditBlock.Edit1.Text);
+        end;
+
+
+      MTParams.Post;
+    end;
+
+    FormEditBlock.Free;
+  end;
 end;
 
 procedure TFormMain.DataSource2DataChange(Sender: TObject; Field: TField);
@@ -168,7 +279,16 @@ procedure TFormMain.DBGrid2CellClick(Column: TColumn);
 begin
   if (DBGrid2.DataSource.DataSet.RecordCount > 0) then
   begin
+    ResetSubWindows('');
     Panel7.Visible := True;
+    if (SubAction = 'client') then
+    begin
+      ResetSubWindows('clientlist');
+    end;
+    if (SubAction = 'bank') then
+    begin
+      ResetSubWindows('banklist');
+    end;
   end
   else
   begin
@@ -583,7 +703,9 @@ begin
   if (DBGrid2.DataSource.DataSet.RecordCount > 0) then
   begin
     DBGrid1.Enabled := False;
+    DBGrid1.Refresh;
     DBGrid2.Enabled := False;
+    DBGrid2.Refresh;
     Panel8.Visible := True;
   end
 
@@ -813,8 +935,7 @@ begin
     begin
       Close;
       SQL.Clear;
-      SQL.Add('select * from clientlist where catalogid=:p1 order by clientname');
-      Params[0].Value := CatalogID;
+      SQL.Add('select * from clientlist order by clientname');
       Open;
         FetchAll;
         FDMemTable2.Data := Data;
@@ -890,28 +1011,12 @@ end;
 
 procedure TFormMain.ResetSubWindows(typeWindows: String);
 begin
-  if (typeWindows = 'delegatelist') then
+  if (typeWindows = '') then
   begin
-
-  DataSource3.Enabled := False;
-  FDMemTable3.Close;
-
-    with DataModuleDB.FDQueryDef do
-    begin
-      Close;
-      SQL.Clear;
-      SQL.Add('select * from delegatelist where delegateid=:p1');
-      Params[0].Value := FDMemTable2.FieldByName('delegateid').AsInteger;
-      Open;
-        FetchAll;
-        FDMemTable3.Data := Data;
-        FDMemTable3.First;
-      Close;
-    end;
-
-  DataSource3.Enabled := True;
-  MyGridSize(DBGrid3);
-
+    DataSource3.Enabled := False;
+    FDMemTable3.Close;
+    MTParams.Close;
+    MTParams.Active := False;
   end;
 
   if (typeWindows = 'clientlist') then
@@ -931,12 +1036,90 @@ begin
         FDMemTable3.Data := Data;
         FDMemTable3.First;
       Close;
+
+      Close;
+      SQL.Clear;
+      SQL.Add('select * from paramlist where paramtable=:p1 order by paramid');
+      Params[0].Value := 'clientlist';
+
+      MTParams.Close;
+      MTParams.Active := False;
+      MTParams.Open;
+
+      Open;
+      while not Eof do
+      begin
+        MTParams.Append;
+          MTParams.FieldByName('paramid').Value := FieldByName('paramid').AsInteger;
+          MTParams.FieldByName('paramcaption').Value := FieldByName('paramcaption').AsString;
+          MTParams.FieldByName('paramname').Value := FieldByName('paramname').AsString;
+          MTParams.FieldByName('paramvalue').Value := FDMemTable3.FieldByName(FieldByName('paramname').AsString).AsString;
+          MTParams.FieldByName('paramtype').Value := FieldByName('paramtype').AsString;
+        MTParams.Post;
+        Next;
+      end;
+      Close;
+
+      MTParams.Active := True;
+
     end;
 
   DataSource3.Enabled := True;
   MyGridSize(DBGrid3);
 
   end;
+
+
+  if (typeWindows = 'banklist') then
+  begin
+
+  DataSource3.Enabled := False;
+  FDMemTable3.Close;
+
+    with DataModuleDB.FDQueryDef do
+    begin
+      Close;
+      SQL.Clear;
+      SQL.Add('select * from banklist where bankid=:p1');
+      Params[0].Value := FDMemTable2.FieldByName('bankid').AsInteger;
+      Open;
+        FetchAll;
+        FDMemTable3.Data := Data;
+        FDMemTable3.First;
+      Close;
+
+      Close;
+      SQL.Clear;
+      SQL.Add('select * from paramlist where paramtable=:p1 order by paramid');
+      Params[0].Value := 'banklist';
+
+      MTParams.Close;
+      MTParams.Active := False;
+      MTParams.Open;
+
+      Open;
+      while not Eof do
+      begin
+        MTParams.Append;
+          MTParams.FieldByName('paramid').Value := FieldByName('paramid').AsInteger;
+          MTParams.FieldByName('paramcaption').Value := FieldByName('paramcaption').AsString;
+          MTParams.FieldByName('paramname').Value := FieldByName('paramname').AsString;
+          MTParams.FieldByName('paramvalue').Value := FDMemTable3.FieldByName(FieldByName('paramname').AsString).AsString;
+          MTParams.FieldByName('paramtype').Value := FieldByName('paramtype').AsString;
+        MTParams.Post;
+        Next;
+      end;
+      Close;
+
+      MTParams.Active := True;
+
+    end;
+
+  DataSource3.Enabled := True;
+  MyGridSize(DBGrid3);
+
+  end;
+
 end;
 
 procedure TFormMain.MainMenuAppLoginClick(Sender: TObject);

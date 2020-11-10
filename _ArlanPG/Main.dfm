@@ -148,12 +148,50 @@ object FormMain: TFormMain
           Align = alLeft
           Anchors = [akLeft, akTop, akRight, akBottom]
           DataSource = DataSource3
+          Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
           TabOrder = 0
           TitleFont.Charset = DEFAULT_CHARSET
           TitleFont.Color = clWindowText
           TitleFont.Height = -13
           TitleFont.Name = 'Segoe UI Semibold'
           TitleFont.Style = []
+          Columns = <
+            item
+              Expanded = False
+              FieldName = 'paramcaption'
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -13
+              Font.Name = 'Segoe UI Semibold'
+              Font.Style = []
+              Title.Alignment = taCenter
+              Title.Caption = #1087#1072#1088#1072#1084#1077#1090#1088
+              Title.Font.Charset = DEFAULT_CHARSET
+              Title.Font.Color = clWindowText
+              Title.Font.Height = -13
+              Title.Font.Name = 'Segoe UI Semibold'
+              Title.Font.Style = [fsBold]
+              Width = 206
+              Visible = True
+            end
+            item
+              Expanded = False
+              FieldName = 'paramvalue'
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -11
+              Font.Name = 'Segoe UI Semibold'
+              Font.Style = []
+              Title.Alignment = taCenter
+              Title.Caption = #1079#1085#1072#1095#1077#1085#1080#1077
+              Title.Font.Charset = DEFAULT_CHARSET
+              Title.Font.Color = clWindowText
+              Title.Font.Height = -13
+              Title.Font.Name = 'Segoe UI Semibold'
+              Title.Font.Style = [fsBold]
+              Width = 419
+              Visible = True
+            end>
         end
         object Panel8: TPanel
           Left = 728
@@ -169,6 +207,7 @@ object FormMain: TFormMain
             Height = 25
             Caption = #1089#1086#1093#1088#1072#1085#1080#1090#1100
             TabOrder = 0
+            OnClick = Button1Click
           end
           object Button2: TButton
             Left = 5
@@ -186,6 +225,7 @@ object FormMain: TFormMain
             Height = 25
             Caption = #1080#1079#1084#1077#1085#1080#1090#1100
             TabOrder = 2
+            OnClick = Button3Click
           end
           object Button4: TButton
             Left = 5
@@ -194,6 +234,7 @@ object FormMain: TFormMain
             Height = 25
             Caption = #1086#1095#1080#1089#1090#1080#1090#1100
             TabOrder = 3
+            Visible = False
           end
         end
       end
@@ -316,7 +357,7 @@ object FormMain: TFormMain
     Top = 248
   end
   object DataSource3: TDataSource
-    DataSet = FDMemTable3
+    DataSet = MTParams
     Left = 479
     Top = 377
   end
@@ -330,5 +371,35 @@ object FormMain: TFormMain
     UpdateOptions.AutoCommitUpdates = True
     Left = 479
     Top = 433
+  end
+  object MTParams: TFDMemTable
+    FetchOptions.AssignedValues = [evMode]
+    FetchOptions.Mode = fmAll
+    ResourceOptions.AssignedValues = [rvSilentMode]
+    ResourceOptions.SilentMode = True
+    UpdateOptions.AssignedValues = [uvCheckRequired, uvAutoCommitUpdates]
+    UpdateOptions.CheckRequired = False
+    UpdateOptions.AutoCommitUpdates = True
+    Left = 575
+    Top = 433
+    object MTParamsparamid: TIntegerField
+      FieldName = 'paramid'
+    end
+    object MTParamsparamcaption: TStringField
+      FieldName = 'paramcaption'
+      Size = 64
+    end
+    object MTParamsparamvalue: TStringField
+      FieldName = 'paramvalue'
+      Size = 1024
+    end
+    object MTParamsparamname: TStringField
+      FieldName = 'paramname'
+      Size = 64
+    end
+    object MTParamsparamtype: TStringField
+      FieldName = 'paramtype'
+      Size = 16
+    end
   end
 end
