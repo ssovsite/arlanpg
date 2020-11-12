@@ -8,7 +8,8 @@ uses
   Settings in 'Settings.pas' {FormSettings},
   Vcl.Themes,
   Vcl.Styles,
-  EditBlock in 'EditBlock.pas' {FormEditBlock};
+  EditBlock in 'EditBlock.pas' {FormEditBlock},
+  AddDocument in 'AddDocument.pas' {FormAddDocument};
 
 {$R *.res}
 

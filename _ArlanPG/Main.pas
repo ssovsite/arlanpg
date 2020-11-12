@@ -102,7 +102,7 @@ implementation
 
 {$R *.dfm}
 
-uses Login, DBUnit, Settings, EditBlock;
+uses Login, DBUnit, Settings, EditBlock, AddDocument;
 
 {$R *.dfm}
 procedure TFormMain.MyGridSize(Grid: Tdbgrid);
@@ -221,6 +221,41 @@ begin
     Button2Click(nil);
   end;
 
+  if (SubAction = 'delegate') then
+  begin
+    with DataModuleDB.FDQueryDef do
+    begin
+      Close;
+      SQL.Clear;
+      SQL.Add('update delegatelist set delegatename=:p1, delegatephone=:p2, delegateorder=:p3 where delegateid=:p0');
+      ParamByName('p0').Value := FDMemTable2.FieldByName('delegateid').AsInteger;
+      MTParams.First;
+      while not MTParams.Eof do
+      begin
+        if (MTParams.FieldByName('paramname').AsString = 'delegatename') then
+        begin
+          ParamByName('p1').Value := MTParams.FieldByName('paramvalue').AsString;
+        end;
+        if (MTParams.FieldByName('paramname').AsString = 'delegatephone') then
+        begin
+          ParamByName('p2').Value := MTParams.FieldByName('paramvalue').AsString;
+        end;
+        if (MTParams.FieldByName('paramname').AsString = 'delegateorder') then
+        begin
+          ParamByName('p3').Value := MTParams.FieldByName('paramvalue').AsString;
+        end;
+        MTParams.Next;
+      end;
+
+      Execute;
+      Close;
+    end;
+
+    ResetBaseWindows('delegatelist');
+    ResetSubWindows('');
+    Button2Click(nil);
+  end;
+
 end;
 
 procedure TFormMain.Button2Click(Sender: TObject);
@@ -272,7 +307,7 @@ end;
 procedure TFormMain.DBGrid1DblClick(Sender: TObject);
 begin
   CatalogID := FDMemTable1.FieldByName('catalogid').AsInteger;
-  ResetBaseWindows('document');
+  ResetBaseWindows('documentlist');
 end;
 
 procedure TFormMain.DBGrid2CellClick(Column: TColumn);
@@ -288,6 +323,10 @@ begin
     if (SubAction = 'bank') then
     begin
       ResetSubWindows('banklist');
+    end;
+    if (SubAction = 'delegate') then
+    begin
+      ResetSubWindows('delegatelist');
     end;
   end
   else
@@ -388,6 +427,20 @@ procedure TFormMain.N1Click(Sender: TObject);
 var   s_1, s_2, s_3, s_4, s_5, s_6, tmpfilename: string;
       FileGUID : TGUID;
 begin
+
+  if (SubAction = 'document') then
+  begin
+    try
+      FormAddDocument := TFormAddDocument.Create(Self);
+      FormAddDocument.ShowModal;
+    finally
+      FormAddDocument.Free;
+    end;
+
+    ResetBaseWindows('documentlist');
+
+  end;
+
   if (SubAction = 'bank') then
   begin
 
@@ -799,7 +852,7 @@ begin
 
   end;
 
-  if (typeWindows = 'document') then
+  if (typeWindows = 'documentlist') then
   begin
   MainMenuDocuments.Caption := 'Документы';
   Panel5.Caption := 'Документы';
@@ -1119,6 +1172,57 @@ begin
   MyGridSize(DBGrid3);
 
   end;
+
+  if (typeWindows = 'delegatelist') then
+  begin
+
+  DataSource3.Enabled := False;
+  FDMemTable3.Close;
+
+    with DataModuleDB.FDQueryDef do
+    begin
+      Close;
+      SQL.Clear;
+      SQL.Add('select * from delegatelist where delegateid=:p1');
+      Params[0].Value := FDMemTable2.FieldByName('delegateid').AsInteger;
+      Open;
+        FetchAll;
+        FDMemTable3.Data := Data;
+        FDMemTable3.First;
+      Close;
+
+      Close;
+      SQL.Clear;
+      SQL.Add('select * from paramlist where paramtable=:p1 order by paramid');
+      Params[0].Value := 'delegatelist';
+
+      MTParams.Close;
+      MTParams.Active := False;
+      MTParams.Open;
+
+      Open;
+      while not Eof do
+      begin
+        MTParams.Append;
+          MTParams.FieldByName('paramid').Value := FieldByName('paramid').AsInteger;
+          MTParams.FieldByName('paramcaption').Value := FieldByName('paramcaption').AsString;
+          MTParams.FieldByName('paramname').Value := FieldByName('paramname').AsString;
+          MTParams.FieldByName('paramvalue').Value := FDMemTable3.FieldByName(FieldByName('paramname').AsString).AsString;
+          MTParams.FieldByName('paramtype').Value := FieldByName('paramtype').AsString;
+        MTParams.Post;
+        Next;
+      end;
+      Close;
+
+      MTParams.Active := True;
+
+    end;
+
+  DataSource3.Enabled := True;
+  MyGridSize(DBGrid3);
+
+  end;
+
 
 end;
 

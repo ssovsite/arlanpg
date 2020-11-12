@@ -159,11 +159,6 @@ object FormMain: TFormMain
             item
               Expanded = False
               FieldName = 'paramcaption'
-              Font.Charset = DEFAULT_CHARSET
-              Font.Color = clWindowText
-              Font.Height = -13
-              Font.Name = 'Segoe UI Semibold'
-              Font.Style = []
               Title.Alignment = taCenter
               Title.Caption = #1087#1072#1088#1072#1084#1077#1090#1088
               Title.Font.Charset = DEFAULT_CHARSET
