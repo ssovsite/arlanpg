@@ -114,6 +114,7 @@ object FormMain: TFormMain
         TitleFont.Name = 'Segoe UI Semibold'
         TitleFont.Style = [fsBold]
         OnCellClick = DBGrid2CellClick
+        OnDblClick = DBGrid2DblClick
       end
       object Panel5: TPanel
         Left = 1

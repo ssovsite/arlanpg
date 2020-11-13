@@ -36,6 +36,7 @@ type
     Label6: TLabel;
     ComboBox4: TComboBox;
     SpeedButton4: TSpeedButton;
+    MTParamsDocparamcriticall: TIntegerField;
     procedure FormShow(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure ComboBox1Select(Sender: TObject);
@@ -44,6 +45,9 @@ type
     procedure Edit1Change(Sender: TObject);
     procedure SpeedButton4Click(Sender: TObject);
     procedure SpeedButton2Click(Sender: TObject);
+    procedure SpeedButton3Click(Sender: TObject);
+    procedure DBGrid1DrawColumnCell(Sender: TObject; const Rect: TRect;
+      DataCol: Integer; Column: TColumn; State: TGridDrawState);
   private
     { Private declarations }
   public
@@ -138,13 +142,9 @@ begin
             ParamByName('p5').Value := integer(ComboBox1.Items.Objects[ComboBox1.ItemIndex]);
             ParamByName('p6').Value := CaseDate;
             ParamByName('p7').Value := CaseNumber;
-
-            Open;
-              while not Eof do
-              begin
-                ComboBox1.Items.AddObject(FieldByName('templatename').AsString,TObject(FieldByName('templateid').AsInteger));
-                Next;
-              end;
+            ParamByName('p8').Value := integer(ComboBox3.Items.Objects[ComboBox3.ItemIndex]);
+            ParamByName('p9').Value := integer(ComboBox2.Items.Objects[ComboBox2.ItemIndex]);;
+            Execute;
             Close;
           end;
 
@@ -153,6 +153,8 @@ begin
 
 
       end;
+
+      Self.Close;
 
   end
   else
@@ -201,6 +203,7 @@ begin
           MTParamsDoc.FieldByName('paramname').Value := FieldByName('templateparamname').AsString;
           MTParamsDoc.FieldByName('paramvalue').Value := '';
           MTParamsDoc.FieldByName('paramtype').Value := FieldByName('templateparamtype').AsString;
+          MTParamsDoc.FieldByName('paramcriticall').Value := FieldByName('criticallparam').AsInteger;
         MTParamsDoc.Post;
         Next;
       end;
@@ -242,6 +245,22 @@ begin
 
     FormEditBlock.Free;
   end;
+end;
+
+procedure TFormAddDocument.DBGrid1DrawColumnCell(Sender: TObject;
+  const Rect: TRect; DataCol: Integer; Column: TColumn; State: TGridDrawState);
+begin
+  if (MTParamsDoc.FieldByName('paramcriticall').AsInteger = 1) then
+  begin
+	  with  DBGrid1.Canvas do
+	  begin
+		  Brush.Color:=clGreen;
+		  Font.Color:=clWhite;
+		  FillRect(Rect);
+		  TextOut(Rect.Left+2,Rect.Top+2,Column.Field.Text);
+	  end;
+  end;
+
 end;
 
 procedure TFormAddDocument.Edit1Change(Sender: TObject);
@@ -326,7 +345,7 @@ begin
     Open;
       while not Eof do
       begin
-        ComboBox3.Items.AddObject(FieldByName('delegatename').AsString,TObject(FieldByName('delegateid').AsInteger));
+        ComboBox3.Items.AddObject(FieldByName('delegatename').AsString+' ('+FieldByName('delegateorder').AsString+')',TObject(FieldByName('delegateid').AsInteger));
         Next;
       end;
     Close;
@@ -385,6 +404,43 @@ begin
           begin
             MTParamsDoc.Edit;
               MTParamsDoc.FieldByName('paramvalue').Value := trim(FieldByName('clientinn').AsString);
+            MTParamsDoc.Post;
+          end;
+          MTParamsDoc.Next;
+        end;
+        MTParamsDoc.First;
+      Close;
+    end;
+end;
+
+procedure TFormAddDocument.SpeedButton3Click(Sender: TObject);
+begin
+    with DataModuleDB.FDQueryDef do
+    begin
+      Close;
+      SQL.Clear;
+      SQL.Add('select * from delegatelist where delegateid=:p1');
+      ParamByName('p1').Value := integer(ComboBox3.Items.Objects[ComboBox3.ItemIndex]);
+      Open;
+        MTParamsDoc.First;
+        while not MTParamsDoc.Eof do
+        begin
+          if (MTParamsDoc.FieldByName('paramname').AsString = 'doc_predstavitel') then
+          begin
+            MTParamsDoc.Edit;
+              MTParamsDoc.FieldByName('paramvalue').Value := trim(FieldByName('delegatename').AsString);
+            MTParamsDoc.Post;
+          end;
+          if (MTParamsDoc.FieldByName('paramname').AsString = 'doc_phone') then
+          begin
+            MTParamsDoc.Edit;
+              MTParamsDoc.FieldByName('paramvalue').Value := trim(FieldByName('delegatephone').AsString);
+            MTParamsDoc.Post;
+          end;
+          if (MTParamsDoc.FieldByName('paramname').AsString = 'doc_doverennost') then
+          begin
+            MTParamsDoc.Edit;
+              MTParamsDoc.FieldByName('paramvalue').Value := trim(FieldByName('delegateorder').AsString);
             MTParamsDoc.Post;
           end;
           MTParamsDoc.Next;

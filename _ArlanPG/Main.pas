@@ -7,7 +7,7 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Menus, System.inifiles, Vcl.ExtCtrls,
   Data.DB, Vcl.Grids, Vcl.DBGrids, FireDAC.Stan.Intf, FireDAC.Stan.Option,
   FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
-  FireDAC.DApt.Intf, FireDAC.Comp.DataSet, FireDAC.Comp.Client, Vcl.StdCtrls;
+  FireDAC.DApt.Intf, FireDAC.Comp.DataSet, FireDAC.Comp.Client, Vcl.StdCtrls, ComObj;
 
 type
   TFormMain = class(TForm)
@@ -83,6 +83,7 @@ type
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);
+    procedure DBGrid2DblClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -103,6 +104,8 @@ implementation
 {$R *.dfm}
 
 uses Login, DBUnit, Settings, EditBlock, AddDocument;
+
+var WordOpen, ExcelOpen, WorkSheetOpen: variant;
 
 {$R *.dfm}
 procedure TFormMain.MyGridSize(Grid: Tdbgrid);
@@ -334,6 +337,23 @@ begin
     Panel7.Visible := False;
   end;
 
+end;
+
+procedure TFormMain.DBGrid2DblClick(Sender: TObject);
+begin
+  if (DataSource2.DataSet.RecordCount <> 0) then
+  begin
+   if (SubAction = 'document') then
+   begin
+      try
+        WordOpen := CreateOleObject('Word.Application');
+        WordOpen.Documents.Open(DataSource2.DataSet.FieldByName('documentlink').AsString);
+        WordOpen.Visible := True;
+      except
+          ShowMessage('Не могу запустить Microsoft Word');
+      end;
+    end;
+  end;
 end;
 
 procedure TFormMain.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -803,7 +823,10 @@ begin
       CatalogID := FDMemTable1.FieldByName('catalogid').AsInteger;
       SubAction := 'document';
       SQL.Clear;
-      SQL.Add('select * from documentlist where catalogid=:p1 order by documentid');
+      //SQL.Add('select * from documentlist where catalogid=:p1 order by documentid');
+      SQL.Add('select dl.*,(select clientname from clientlist cl where cl.clientid=dl.clientid) as clientname,');
+      SQL.Add('(select delegatename from delegatelist del where del.delegateid=dl.agentid) as delegatename');
+      SQL.Add('from documentlist dl where catalogid=:p1 order by dl.documentid');
       Params[0].Value := CatalogID;
       Open;
         FetchAll;
@@ -828,7 +851,7 @@ begin
     DBGrid2.Columns[1].Title.Caption := 'Дата';
     DBGrid2.Columns[1].Title.Alignment := taCenter;
     DBGrid2.Columns.Add;
-    DBGrid2.Columns[2].FieldName := 'clientid';
+    DBGrid2.Columns[2].FieldName := 'clientname';
     DBGrid2.Columns[2].Title.Caption := 'Клиент';
     DBGrid2.Columns[2].Title.Alignment := taCenter;
     DBGrid2.Columns.Add;
@@ -836,7 +859,7 @@ begin
     DBGrid2.Columns[3].Title.Caption := 'Номер дела';
     DBGrid2.Columns[3].Title.Alignment := taCenter;
     DBGrid2.Columns.Add;
-    DBGrid2.Columns[4].FieldName := 'agentid';
+    DBGrid2.Columns[4].FieldName := 'delegatename';
     DBGrid2.Columns[4].Title.Caption := 'Представитель';
     DBGrid2.Columns[4].Title.Alignment := taCenter;
     DBGrid2.Columns.Add;
@@ -864,7 +887,10 @@ begin
     begin
       Close;
       SQL.Clear;
-      SQL.Add('select * from documentlist where catalogid=:p1 order by documentid');
+      //SQL.Add('select * from documentlist where catalogid=:p1 order by documentid');
+      SQL.Add('select dl.*,(select clientname from clientlist cl where cl.clientid=dl.clientid) as clientname,');
+      SQL.Add('(select delegatename from delegatelist del where del.delegateid=dl.agentid) as delegatename');
+      SQL.Add('from documentlist dl where catalogid=:p1 order by dl.documentid');
       Params[0].Value := CatalogID;
       Open;
         FetchAll;
@@ -883,7 +909,7 @@ begin
     DBGrid2.Columns[1].Title.Caption := 'Дата';
     DBGrid2.Columns[1].Title.Alignment := taCenter;
     DBGrid2.Columns.Add;
-    DBGrid2.Columns[2].FieldName := 'clientid';
+    DBGrid2.Columns[2].FieldName := 'clientname';
     DBGrid2.Columns[2].Title.Caption := 'Клиент';
     DBGrid2.Columns[2].Title.Alignment := taCenter;
     DBGrid2.Columns.Add;
@@ -891,7 +917,7 @@ begin
     DBGrid2.Columns[3].Title.Caption := 'Номер дела';
     DBGrid2.Columns[3].Title.Alignment := taCenter;
     DBGrid2.Columns.Add;
-    DBGrid2.Columns[4].FieldName := 'agentid';
+    DBGrid2.Columns[4].FieldName := 'delegatename';
     DBGrid2.Columns[4].Title.Caption := 'Представитель';
     DBGrid2.Columns[4].Title.Alignment := taCenter;
     DBGrid2.Columns.Add;

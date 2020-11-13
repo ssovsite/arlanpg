@@ -111,6 +111,7 @@ object FormAddDocument: TFormAddDocument
     Width = 23
     Height = 22
     Caption = #10003
+    OnClick = SpeedButton3Click
   end
   object Label6: TLabel
     Left = 9
@@ -192,6 +193,7 @@ object FormAddDocument: TFormAddDocument
     TitleFont.Height = -11
     TitleFont.Name = 'Tahoma'
     TitleFont.Style = []
+    OnDrawColumnCell = DBGrid1DrawColumnCell
     OnDblClick = DBGrid1DblClick
     Columns = <
       item
@@ -284,6 +286,9 @@ object FormAddDocument: TFormAddDocument
     object MTParamsDocparamvalue: TStringField
       FieldName = 'paramvalue'
       Size = 1024
+    end
+    object MTParamsDocparamcriticall: TIntegerField
+      FieldName = 'paramcriticall'
     end
   end
 end
