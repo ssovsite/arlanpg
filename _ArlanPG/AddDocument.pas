@@ -187,7 +187,7 @@ begin
       Close;
 
       SQL.Clear;
-      SQL.Add('select * from templateparamlist where templateid=:p1 order by criticallparam desc, templateparamcaption asc');
+      SQL.Add('select * from templateparamlist where templateid=:p1 order by criticallparam desc, templateparamorder asc, templateparamcaption asc');
       Params[0].Value := integer(ComboBox1.Items.Objects[ComboBox1.ItemIndex]);
 
       MTParamsDoc.Close;
